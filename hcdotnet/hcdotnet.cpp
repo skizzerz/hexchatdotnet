@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "hcdotnet.h"
 
 using namespace System;
+using namespace System::Text;
+using namespace msclr::interop;
 using namespace HexChatDotNet;
 
 hexchat_plugin* ph = nullptr;
@@ -28,32 +30,78 @@ static hexchat_hook* hooks[4] = { nullptr };
 static int reinit = 0;
 
 static int load_command(char** word, char** word_eol, void* user_data) {
-	return static_cast<int>(HexChatInternal::Load(gcnew String(word_eol[1])));
+	return static_cast<int>(HexChatInternal::Load(gcnew String(word_eol[2])));
 }
 
 static int reload_command(char** word, char** word_eol, void* user_data) {
-	return static_cast<int>(HexChatInternal::Reload(gcnew String(word_eol[1])));
+	return static_cast<int>(HexChatInternal::Reload(gcnew String(word_eol[2])));
 }
 
 static int unload_command(char** word, char** word_eol, void* user_data) {
-	return static_cast<int>(HexChatInternal::Unload(gcnew String(word_eol[1])));
+	return static_cast<int>(HexChatInternal::Unload(gcnew String(word_eol[2])));
 }
 
 static int dotnet_command(char** word, char** word_eol, void* user_data) {
-	// TODO: this
-	// word[1] is load, reload, unload, or errinfo
+	if (!word[2][0] || !word[3][0]) {
+		hexchat_print(ph, "Usage: /DOTNET LOAD|UNLOAD|RELOAD|ERRINFO <param> - see /HELP DOTNET for more details.");
+		return HEXCHAT_EAT_ALL;
+	}
+
+	int retval = HEXCHAT_EAT_ALL;
+
+	if (!stricmp(word[2], "load")) {
+		retval = load_command(word + sizeof(char*), word_eol + sizeof(char*), user_data);
+	} else if (!stricmp(word[2], "unload")) {
+		retval = unload_command(word + sizeof(char*), word_eol + sizeof(char*), user_data);
+	} else if (!stricmp(word[2], "reload")) {
+		retval = reload_command(word + sizeof(char*), word_eol + sizeof(char*), user_data);
+	} else if (!stricmp(word[2], "errinfo")) {
+		try {
+			StringBuilder sb;
+			marshal_context ctx;
+			Exception^ e = HexChatInternal::GetException(gcnew String(word[3]));
+			
+			sb.AppendFormat("Uncaught Exception in plugin: {0}", e->Message);
+			sb.AppendLine();
+			sb.Append(e->StackTrace);
+
+			while (e->InnerException != nullptr) {
+				e = e->InnerException;
+				sb.AppendLine();
+				sb.AppendFormat("Inner Exception: {0}", e->Message);
+				sb.AppendLine();
+				sb.Append(e->StackTrace);
+			}
+
+			hexchat_print(ph, ctx.marshal_as<const char*>(sb.ToString()));
+		} catch (KeyNotFoundException^) {
+			hexchat_printf(ph, "Error ID %s not found.", word[3]);
+		}
+	} else {
+		hexchat_print(ph, "Usage: /DOTNET LOAD|UNLOAD|RELOAD|ERRINFO <param> - see /HELP DOTNET for more details.");
+	}
+
+	if (retval == HEXCHAT_EAT_NONE) {
+		hexchat_printf(ph, "Cannot %s %s - not a valid file or plugin name", word[2], word_eol[3]);
+	}
+
 	return HEXCHAT_EAT_ALL;
 }
 
-extern "C" __declspec(dllexport) int hexchat_plugin_init(hexchat_plugin* plugin_handle, char** plugin_name, char** plugin_desc, char** plugin_version, char* arg) {
-	static bool initialized = false;
+static bool initialized = false;
 
+extern "C" __declspec(dllexport) int hexchat_plugin_init(hexchat_plugin* plugin_handle, char** plugin_name, char** plugin_desc, char** plugin_version, char* arg) {
 	if (initialized) {
 		hexchat_print(ph, ".NET interface already loaded.");
 		// deinit() is still called even if init() is failed, make sure we don't deinit here
 		++reinit;
 		return 0;
 	}
+
+	ph = plugin_handle;
+	*plugin_name = ".NET";
+	*plugin_desc = ".NET plugin interface";
+	*plugin_version = API_VERSION;
 
 	hooks[0] = hexchat_hook_command(ph, "LOAD", HEXCHAT_PRI_NORM, load_command, nullptr, nullptr);
 	hooks[1] = hexchat_hook_command(ph, "RELOAD", HEXCHAT_PRI_NORM, reload_command, nullptr, nullptr);
@@ -80,6 +128,7 @@ extern "C" __declspec(dllexport) int hexchat_plugin_deinit() {
 	}
 
 	hexchat_print(ph, ".NET interface unloaded.");
+	initialized = false;
 
 	return 1;
 }

@@ -38,7 +38,7 @@ namespace HexChatDotNet {
 		return info;
 	}
 
-	static IntPtr^ get_info_ptr(void* _context, const char* info_key) {
+	static IntPtr get_info_ptr(void* _context, const char* info_key) {
 		hexchat_context* oldContext = hexchat_get_context(ph);
 		hexchat_context* context = static_cast<hexchat_context*>(_context);
 		int success = hexchat_set_context(ph, context);
@@ -50,7 +50,7 @@ namespace HexChatDotNet {
 		char* info = const_cast<char*>(hexchat_get_info(ph, info_key));
 		hexchat_set_context(ph, oldContext);
 
-		return gcnew IntPtr(static_cast<void*>(info));
+		return IntPtr(static_cast<void*>(info));
 	}
 
 	String^ HexChatContext::AwayReason::get() {
@@ -65,7 +65,7 @@ namespace HexChatDotNet {
 		return get_info_str(_handle, "charset");
 	}
 
-	IntPtr^ HexChatContext::GtkWinPtr::get() {
+	IntPtr HexChatContext::GtkWinPtr::get() {
 		return get_info_ptr(_handle, "gtkwin_ptr");
 	}
 
@@ -120,7 +120,7 @@ namespace HexChatDotNet {
 		return get_info_str(_handle, "topic");
 	}
 
-	IntPtr^ HexChatContext::WinPtr::get() {
+	IntPtr HexChatContext::WinPtr::get() {
 		return get_info_ptr(_handle, "win_ptr");
 	}
 
