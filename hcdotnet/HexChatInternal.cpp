@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "hcdotnet.h"
 
 #define STORED_EXCEPTIONS 100
+#define ASSEMBLY_PATH_KEY "HCDOTNET_ASSEMBLY_PATH"
+#define TYPE_NAME_KEY "HCDOTNET_TYPENAME"
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -30,6 +32,7 @@ using namespace System::IO;
 namespace HexChatDotNet {
 	static HexChatInternal::HexChatInternal() {
 		_loadedPlugins = gcnew List<Tuple<AppDomain^, HexChatPlugin^>^>();
+		_pluginMap = gcnew Dictionary<String^, Tuple<String^, IntPtr>^>();
 		_exceptions = gcnew Dictionary<String^, Exception^>();
 		_exceptionKeys = gcnew LinkedList<String^>();
 	}
@@ -70,7 +73,7 @@ namespace HexChatDotNet {
 	static bool isPluginClass(Type^ type) {
 		if (type->BaseType == nullptr) {
 			return false;
-		} else if (type->BaseType == HexChatPlugin::typeid) {
+		} else if (type->BaseType->AssemblyQualifiedName == HexChatPlugin::typeid->AssemblyQualifiedName) {
 			return true;
 		} else {
 			return isPluginClass(type->BaseType);
@@ -78,34 +81,71 @@ namespace HexChatDotNet {
 	}
 
 	void HexChatInternal::FindTypeInAssembly() {
-		TypeName = nullptr;
+		AppDomain::CurrentDomain->SetData(TYPE_NAME_KEY, nullptr);
+		String^ assemblyPath = safe_cast<String^>(AppDomain::CurrentDomain->GetData(ASSEMBLY_PATH_KEY));
 
 		try {
-			Assembly^ reflected = Assembly::ReflectionOnlyLoadFrom(AssemblyPath);
+			Assembly^ reflected = Assembly::ReflectionOnlyLoadFrom(assemblyPath);
 			bool found = false;
 
 			for each (Type^ type in reflected->GetExportedTypes()) {
 				if (!type->IsAbstract && isPluginClass(type)) {
 					if (found) {
-						HexChat::Print("Error loading plugin {0}: image can only contain one non-abstract class that inherits from HexChatPlugin.", AssemblyPath);
+						HexChat::Print("Error loading plugin {0}: image can only contain one non-abstract class that inherits from HexChatPlugin.", assemblyPath);
 						found = false;
 						break;
 					}
 
 					found = true;
-					TypeName = type->FullName;
+					AppDomain::CurrentDomain->SetData(TYPE_NAME_KEY, type->FullName);
 				}
 			}
 
 			// don't report any errors if we find a dll that doesn't export any types as this means it is likely a C plugin instead (or a dependency dll)
 			if (!found) {
-				TypeName = nullptr;
+				AppDomain::CurrentDomain->SetData(TYPE_NAME_KEY, nullptr);
 			}
 		} catch (Exception^ e) {
 			String^ errid = RegisterException(e);
 			HexChat::Print("Exception occurred when scanning plugins: {0}", e->Message);
 			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
 		}
+	}
+
+	// Loads dependencies from the same folder as requesting assembly EXCEPT if we are trying to load hcdotnet.dll
+	// in which case we point to ourself instead to prevent two different hcdotnet versions from being loaded
+	Assembly^ HexChatInternal::LoadDependencies(Object^ sender, ResolveEventArgs^ args) {
+		String^ requestedName = AssemblyName(args->Name).Name;
+
+		if (requestedName == "hcdotnet") {
+			return Assembly::GetExecutingAssembly();
+		}
+
+		String^ folderPath = Path::GetDirectoryName(args->RequestingAssembly->Location);
+		String^ assemblyPath = Path::Combine(folderPath, requestedName + ".dll");
+
+		if (!File::Exists(assemblyPath)) {
+			return nullptr;
+		}
+
+		return Assembly::LoadFrom(assemblyPath);
+	}
+
+	Assembly^ HexChatInternal::ReflectionOnlyLoadDependencies(Object^ sender, ResolveEventArgs^ args) {
+		String^ requestedName = AssemblyName(args->Name).Name;
+
+		if (requestedName == "hcdotnet") {
+			return Assembly::ReflectionOnlyLoadFrom(Assembly::GetExecutingAssembly()->Location);
+		}
+
+		String^ folderPath = Path::GetDirectoryName(args->RequestingAssembly->Location);
+		String^ assemblyPath = Path::Combine(folderPath, requestedName + ".dll");
+
+		if (!File::Exists(assemblyPath)) {
+			return nullptr;
+		}
+
+		return Assembly::ReflectionOnlyLoadFrom(assemblyPath);
 	}
 
 	Eat HexChatInternal::Load(String^ path) {
@@ -115,18 +155,38 @@ namespace HexChatDotNet {
 		}
 
 		HexChatPlugin^ plugin = nullptr;
-		AppDomain^ addonDomain = AppDomain::CreateDomain(path);
-		AppDomain^ reflectionDomain = AppDomain::CreateDomain("ReflectionDomain");
-		AssemblyPath = path;
-		reflectionDomain->DoCallBack(gcnew CrossAppDomainDelegate(FindTypeInAssembly));
-		AppDomain::Unload(reflectionDomain);
+		AppDomain^ addonDomain = nullptr;
+		AppDomain^ reflectionDomain = nullptr;
+		String^ typeName = nullptr;
+		
+		try {
+			AppDomainSetup^ setup = gcnew AppDomainSetup();
+			setup->ApplicationBase = Path::GetDirectoryName(Assembly::GetExecutingAssembly()->Location);
 
-		if (TypeName != nullptr) {
+			addonDomain = AppDomain::CreateDomain(path, nullptr, setup);
+			reflectionDomain = AppDomain::CreateDomain("ReflectionDomain", nullptr, setup);
+
+			AppDomain::CurrentDomain->AssemblyResolve += gcnew ResolveEventHandler(&HexChatDotNet::HexChatInternal::LoadDependencies);
+			addonDomain->AssemblyResolve += gcnew ResolveEventHandler(&HexChatDotNet::HexChatInternal::LoadDependencies);
+			reflectionDomain->ReflectionOnlyAssemblyResolve += gcnew ResolveEventHandler(&HexChatDotNet::HexChatInternal::ReflectionOnlyLoadDependencies);
+			
+			reflectionDomain->SetData(ASSEMBLY_PATH_KEY, path);
+			reflectionDomain->DoCallBack(gcnew CrossAppDomainDelegate(FindTypeInAssembly));
+			typeName = safe_cast<String^>(reflectionDomain->GetData(TYPE_NAME_KEY));
+			AppDomain::Unload(reflectionDomain);
+		} catch (Exception^ e) {
+			String^ errid = RegisterException(e);
+			HexChat::Print("Exception occurred when scanning plugins: {0}", e->Message);
+			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
+		}
+
+		if (typeName != nullptr) {
 			try {
-				plugin = safe_cast<HexChatPlugin^>(addonDomain->CreateInstanceFromAndUnwrap(path, TypeName));
+				plugin = safe_cast<HexChatPlugin^>(addonDomain->CreateInstanceFromAndUnwrap(path, typeName));
 				plugin->Init();
-				plugin->_ph = HexChat::PluginGuiAdd(path, plugin->Name, plugin->Desc, plugin->Version);
+				IntPtr ph = HexChat::PluginGuiAdd(path, plugin->Name, plugin->Desc, plugin->Version);
 				_loadedPlugins->Add(gcnew Tuple<AppDomain^, HexChatPlugin^>(addonDomain, plugin));
+				_pluginMap[path] = gcnew Tuple<String^, IntPtr>(plugin->Name, ph);
 			} catch (Exception^ e) {
 				String^ errid = RegisterException(e);
 				HexChat::Print("Exception occured when loading plugin: {0}", e->Message);
@@ -150,16 +210,16 @@ namespace HexChatDotNet {
 
 		if (!path->EndsWith(".dll")) {
 			// given a plugin name instead of path, find the path given the name
-			for each (auto t in _loadedPlugins) {
-				if (t->Item2->Name == path) {
-					path = t->Item2->_path;
+			for each (auto kvp in _pluginMap) {
+				if (kvp.Value->Item1 == path) {
+					path = kvp.Key;
 					ourPlugin = true;
 					break;
 				}
 			}
 		} else {
 			for each (auto t in _loadedPlugins) {
-				if (t->Item2->_path == path) {
+				if (_pluginMap->ContainsKey(path)) {
 					ourPlugin = true;
 					break;
 				}
@@ -188,12 +248,22 @@ namespace HexChatDotNet {
 					pluginDomain = _loadedPlugins[i]->Item1;
 					plugin = _loadedPlugins[i]->Item2;
 					index = i;
+
+					// update path to be the real path so we can remove from pluginMap
+					for each (auto kvp in _pluginMap) {
+						if (kvp.Value->Item1 == path) {
+							path = kvp.Key;
+							break;
+						}
+					}
 					break;
 				}
 			}
 		} else {
+			String^ name = _pluginMap[path]->Item1;
+
 			for (int i = 0; i < _loadedPlugins->Count; ++i) {
-				if (_loadedPlugins[i]->Item2->_path == path) {
+				if (_loadedPlugins[i]->Item2->Name == name) {
 					pluginDomain = _loadedPlugins[i]->Item1;
 					plugin = _loadedPlugins[i]->Item2;
 					index = i;
@@ -207,14 +277,16 @@ namespace HexChatDotNet {
 		}
 
 		delete plugin;
+		HexChat::PluginGuiRemove(_pluginMap[path]->Item2);
 		AppDomain::Unload(pluginDomain);
 		_loadedPlugins->RemoveAt(index);
+		_pluginMap->Remove(path);
 
 		return Eat::All;
 	}
 
 	void HexChatInternal::LoadAll() {
-		String^ scandir = HexChat::ConfigDir + "/addons";
+		String^ scandir = Path::Combine(HexChat::ConfigDir, "addons", "dotnet");
 		String^ ourfile = Assembly::GetExecutingAssembly()->Location;
 
 		for each(String^ dllfile in Directory::GetFiles(scandir, "*.dll", SearchOption::TopDirectoryOnly)) {
@@ -229,8 +301,8 @@ namespace HexChatDotNet {
 	void HexChatInternal::UnloadAll() {
 		List<String^>^ paths = gcnew List<String^>();
 
-		for each (auto t in _loadedPlugins) {
-			paths->Add(t->Item2->_path);
+		for each (auto kvp in _pluginMap) {
+			paths->Add(kvp.Key);
 		}
 
 		for each (String^ path in paths) {

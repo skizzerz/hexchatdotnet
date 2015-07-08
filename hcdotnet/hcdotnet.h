@@ -405,7 +405,7 @@ namespace HexChatDotNet {
 	/// Base class that all plugins should inherit from.
 	/// Each .dll file should only contain ONE non-abstract class that inherits from HexChatPlugin.
 	/// </summary>
-	public ref class HexChatPlugin abstract : System::IDisposable {
+	public ref class HexChatPlugin abstract : System::MarshalByRefObject, System::IDisposable {
 	public:
 		HexChatPlugin();
 		!HexChatPlugin();
@@ -431,10 +431,6 @@ namespace HexChatDotNet {
 
 	private:
 		System::Collections::Generic::List<IHexChatHook^>^ _hooks;
-
-	internal:
-		System::IntPtr _ph;
-		System::String^ _path;
 	};
 
 	public ref class HexChat abstract sealed {

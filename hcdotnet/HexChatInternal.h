@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #pragma once
 
 using namespace System;
+using namespace System::Reflection;
 using namespace System::Collections::Generic;
 
 namespace HexChatDotNet {
@@ -27,11 +28,10 @@ namespace HexChatDotNet {
 
 	ref class HexChatInternal abstract sealed {
 		static List<Tuple<AppDomain^, HexChatPlugin^>^>^ _loadedPlugins;
+		static Dictionary<String^, Tuple<String^, IntPtr>^>^ _pluginMap;
 		static Dictionary<String^, Exception^>^ _exceptions;
 		static LinkedList<String^>^ _exceptionKeys;
 
-		static property String^ TypeName;
-		static property String^ AssemblyPath;
 		static void FindTypeInAssembly();
 
 	internal:
@@ -42,6 +42,9 @@ namespace HexChatDotNet {
 
 		static String^ GetInfo(const char* id);
 		
+		static Assembly^ LoadDependencies(Object^ sender, ResolveEventArgs^ args);
+		static Assembly^ ReflectionOnlyLoadDependencies(Object^ sender, ResolveEventArgs^ args);
+
 		static Eat Load(String^ path);
 		static Eat Reload(String^ path);
 		static Eat Unload(String^ path);

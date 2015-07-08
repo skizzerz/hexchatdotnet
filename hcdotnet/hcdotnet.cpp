@@ -61,14 +61,14 @@ static int dotnet_command(char** word, char** word_eol, void* user_data) {
 			marshal_context ctx;
 			Exception^ e = HexChatInternal::GetException(gcnew String(word[3]));
 			
-			sb.AppendFormat("Uncaught Exception in plugin: {0}", e->Message);
+			sb.AppendFormat("Uncaught Exception in plugin: {0}", e->Message != nullptr ? e->Message : String::Empty);
 			sb.AppendLine();
 			sb.Append(e->StackTrace);
 
 			while (e->InnerException != nullptr) {
 				e = e->InnerException;
 				sb.AppendLine();
-				sb.AppendFormat("Inner Exception: {0}", e->Message);
+				sb.AppendFormat("Inner Exception: {0}", e->Message != nullptr ? e->Message : String::Empty);
 				sb.AppendLine();
 				sb.Append(e->StackTrace);
 			}

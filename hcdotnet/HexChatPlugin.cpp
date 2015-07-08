@@ -28,7 +28,6 @@ using namespace System::Net::Sockets;
 namespace HexChatDotNet {
 	HexChatPlugin::HexChatPlugin() {
 		_hooks = gcnew List<IHexChatHook^>();
-		_ph = IntPtr::Zero;
 		PluginPrefs = gcnew PrefDictionary(this);
 	}
 
@@ -42,10 +41,7 @@ namespace HexChatDotNet {
 	}
 
 	HexChatPlugin::!HexChatPlugin() {
-		if (_ph != IntPtr::Zero) {
-			HexChat::PluginGuiRemove(_ph);
-			_ph = IntPtr::Zero;
-		}
+		// no-op for now
 	}
 
 	CommandHook^ HexChatPlugin::CreateCommandHook(String^ name, String^ help, Priority priority) {
@@ -55,6 +51,7 @@ namespace HexChatDotNet {
 
 		auto hook = gcnew CommandHook(this, name, help, priority);
 		_hooks->Add(hook);
+		hook->Hook();
 		return hook;
 	}
 
