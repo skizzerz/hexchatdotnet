@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #pragma once
 
 #define PROPERTY(n, s, t) static property t n { t get() { return GetPref_##t((s)); } void set(t value) { HexChat::Command("SET {0} {1}", (s), value); } }
+#define EPROPERTY(n, s, t) static property t n { t get() { return safe_cast<t>(GetPref_int((s))); } void set(t value) { HexChat::Command("SET {0} {1}", (s), safe_cast<int>(value)); } }
 
 #ifndef HEXCHAT_PLUGIN_H
 struct hexchat_event_attrs;
@@ -74,6 +75,9 @@ namespace HexChatDotNet {
 	enum class DccTransferStatus;
 	enum class DccTransferType;
 	enum class IgnoreListFlags;
+	enum class CompletionOrder;
+	enum class Language;
+	enum class SearchBar;
 
 	public delegate Eat CommandCallback(array<System::String^>^ word, array<System::String^>^ wordEol);
 	public delegate Eat PrintCallback(array<System::String^>^ word, HexChatEventAttrs^ eventAttrs);
@@ -399,6 +403,72 @@ namespace HexChatDotNet {
 		Dcc = 0x80
 	};
 
+	public enum class CompletionOrder {
+		Alphabetical = 0,
+		LastTalked = 1
+	};
+
+	public enum class Language {
+		Afrikaans = 0,
+		Albanian = 1,
+		Amharic = 2,
+		Asturian = 3,
+		Azeri = 4,
+		Basque = 5,
+		Belarusian = 6,
+		Bulgarian = 7,
+		Catalan = 8,
+		ChineseChina = 9,
+		ChineseTaiwan = 10,
+		Czech = 11,
+		Danish = 12,
+		Dutch = 13,
+		EnglishBritish = 14,
+		English = 15,
+		Estonian = 16,
+		Finnish = 17,
+		French = 18,
+		Galician = 19,
+		German = 20,
+		Greek = 21,
+		Gujarati = 22,
+		Hindi = 23,
+		Hungarian = 24,
+		Indonesian = 25,
+		Italian = 26,
+		Japanese = 27,
+		Kannada = 28,
+		Kinyarwanda = 29,
+		Korean = 30,
+		Latvian = 31,
+		Lithuanian = 32,
+		Macedonian = 33,
+		Malayalam = 34,
+		Malay = 35,
+		NorwegianBokmal = 36,
+		NorwegianNynorsk = 37,
+		Polish = 38,
+		Portuguese = 39,
+		PortugueseBrazilian = 40,
+		Punjabi = 41,
+		Russian = 42,
+		Serbian = 43,
+		Slovak = 44,
+		Slovenian = 45,
+		Spanish = 46,
+		Swedish = 47,
+		Thai = 48,
+		Turkish = 49,
+		Ukranian = 50,
+		Vietnamese = 51,
+		Walloon = 52
+	};
+
+	public enum class SearchBar {
+		BelowTextarea = 0,
+		AboveTextarea = 1
+	};
+
 	#pragma endregion
 
 	/// <summary>
@@ -418,6 +488,8 @@ namespace HexChatDotNet {
 
 		virtual void Init() abstract;
 		virtual ~HexChatPlugin();
+
+		virtual System::Object^ InitializeLifetimeService() override sealed;
 
 	protected:
 		CommandHook^ CreateCommandHook(System::String^ name, [System::Runtime::InteropServices::OptionalAttribute] System::String^ help, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
@@ -490,14 +562,11 @@ namespace HexChatDotNet {
 
 		PROPERTY(CompletionAmount, "completion_amount", int)
 		PROPERTY(CompletionAuto, "completion_auto", bool)
-		PROPERTY(CompletionSort, "completion_sort", int) // TODO: determine if enum
+		EPROPERTY(CompletionSort, "completion_sort", CompletionOrder)
 		PROPERTY(CompletionSuffix, "completion_suffix", string)
 
 		PROPERTY(DccAutoChat, "dcc_auto_chat", bool)
-		static property DccRecvMode DccAutoRecv { // TODO: check enum values
-			DccRecvMode get() { return safe_cast<DccRecvMode>(GetPref_int("dcc_auto_recv")); }
-			void set(DccRecvMode value) { HexChat::Command("SET dcc_recv_mode {0}", safe_cast<int>(value)); }
-		}
+		EPROPERTY(DccAutoRecv, "dcc_auto_recv", DccRecvMode)
 		PROPERTY(DccAutoResume, "dcc_auto_resume", bool)
 		PROPERTY(DccBlocksize, "dcc_blocksize", int)
 		PROPERTY(DccCompletedDir, "dcc_completed_dir", string)
@@ -511,10 +580,7 @@ namespace HexChatDotNet {
 		PROPERTY(DccIpFromServer, "dcc_ip_from_server", bool)
 		PROPERTY(DccMaxGetCps, "dcc_max_get_cps", int)
 		PROPERTY(DccMaxSendCps, "dcc_max_send_cps", int)
-		static property FilePermissions DccPermissions {
-			FilePermissions get() { return safe_cast<FilePermissions>(GetPref_int("dcc_permissions")); }
-			void set(FilePermissions value) { HexChat::Command("SET dcc_permissions {0}", safe_cast<int>(value)); }
-		}
+		EPROPERTY(DccPermissions, "dcc_permissions", FilePermissions)
 		PROPERTY(DccPortFirst, "dcc_port_first", int)
 		PROPERTY(DccPortLast, "dcc_port_last", int)
 		PROPERTY(DccRemove, "dcc_remove", bool)
@@ -548,18 +614,20 @@ namespace HexChatDotNet {
 		PROPERTY(GuiInputSpell, "gui_input_spell", bool)
 		PROPERTY(GuiInputStyle, "gui_input_style", bool)
 		PROPERTY(GuiJoinDialog, "gui_join_dialog", bool)
-		static property LagometerType GuiLagometer { // TODO: check enum values
-			LagometerType get() { return safe_cast<LagometerType>(GetPref_int("gui_lagometer")); }
-			void set(LagometerType value) { HexChat::Command("SET gui_lagometer {0}", safe_cast<int>(value)); }
+		EPROPERTY(GuiLagometer, "gui_lagometer", LagometerType)
+		EPROPERTY(GuiLang, "gui_lang", Language)
+		// GuiCulture is a wrapper around the GuiLang property that deals with CultureInfo objects
+		// Not every Language has a CultureInfo, and we return the Invariant culture for those
+		static property System::Globalization::CultureInfo^ GuiCulture {
+			System::Globalization::CultureInfo^ get();
 		}
-		PROPERTY(GuiLang, "gui_lang", int) // TODO: make into enum property
 		PROPERTY(GuiModeButtons, "gui_mode_buttons", bool)
 		PROPERTY(GuiPaneDividerPosition, "gui_pane_divider_position", int)
 		PROPERTY(GuiPaneLeftSize, "gui_pane_left_size", int)
 		PROPERTY(GuiPaneRightSize, "gui_pane_right_size", int)
 		PROPERTY(GuiPaneRightSizeMin, "gui_pane_right_size_min", int)
 		PROPERTY(GuiQuitDialog, "gui_quit_dialog", bool)
-		PROPERTY(GuiSearchPos, "gui_search_pos", int) // TODO: determine if enum
+		EPROPERTY(GuiSearchPos, "gui_search_pos", SearchBar)
 		/* PROPERTY(GuiSingle, "gui_single", bool) */
 		PROPERTY(GuiSlistFav, "gui_slist_fav", bool)
 		PROPERTY(GuiSlistSelect, "gui_slist_select", int)
@@ -1055,3 +1123,4 @@ namespace HexChatDotNet {
 
 // clean up #defines
 #undef PROPERTY
+#undef EPROPERTY

@@ -44,6 +44,11 @@ namespace HexChatDotNet {
 		// no-op for now
 	}
 
+	// Don't allow our plugin to time out on Remoting and be deallocated prematurely
+	Object^ HexChatPlugin::InitializeLifetimeService() {
+		return nullptr;
+	}
+
 	CommandHook^ HexChatPlugin::CreateCommandHook(String^ name, String^ help, Priority priority) {
 		if (name == nullptr) {
 			throw gcnew ArgumentNullException("name");
