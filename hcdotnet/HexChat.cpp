@@ -159,7 +159,7 @@ namespace HexChatDotNet {
 			tarr.push_back(ctx.marshal_as<const char*, String>(target));
 		}
 
-		hexchat_send_modes(ph, &tarr[0], tarr.size(), modesPerLine, safe_cast<char>(modeAction), mode);
+		hexchat_send_modes(ph, &tarr[0], static_cast<int>(tarr.size()), modesPerLine, safe_cast<char>(modeAction), mode);
 	}
 
 	int HexChat::IrcStrCmp(String^ string1, String^ string2) {

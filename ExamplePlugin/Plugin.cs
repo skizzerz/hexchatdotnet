@@ -31,7 +31,8 @@ namespace ExamplePlugin
 	/// </summary>
 	public class Plugin : HexChatPlugin
 	{
-		public override string Name {
+		public override string Name
+		{
 			get { return "Example"; }
 		}
 
@@ -49,6 +50,8 @@ namespace ExamplePlugin
 		{
 			CommandHook meow = CreateCommandHook("meow", "Usage: /meow");
 			meow.Callback += Meow;
+			CommandHook woof = CreateCommandHook("woof", "Usage: /woof");
+			woof.Callback += Woof;
 			HexChat.Print("Example .NET plugin loaded!");
 		}
 
@@ -56,6 +59,18 @@ namespace ExamplePlugin
 		{
 			HexChat.Print("meow!");
 			return Eat.All;
+		}
+
+		public Eat Woof(string[] words, string[] wordsEol)
+		{
+			throw new NoDogsAllowedException("Dogs aren't allowed");
+		}
+	}
+
+	public class NoDogsAllowedException : Exception
+	{
+		public NoDogsAllowedException(string message) : base(message)
+		{
 		}
 	}
 }

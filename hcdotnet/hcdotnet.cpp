@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using namespace System;
 using namespace System::Text;
+using namespace System::Collections::Generic;
 using namespace msclr::interop;
 using namespace HexChatDotNet;
 
@@ -56,27 +57,32 @@ static int dotnet_command(char** word, char** word_eol, void* user_data) {
 	} else if (!stricmp(word[2], "reload")) {
 		retval = reload_command(word + sizeof(char*), word_eol + sizeof(char*), user_data);
 	} else if (!stricmp(word[2], "errinfo")) {
-		try {
-			StringBuilder sb;
-			marshal_context ctx;
-			Exception^ e = HexChatInternal::GetException(gcnew String(word[3]));
-			
-			sb.AppendFormat("Uncaught Exception in plugin: {0}", e->Message != nullptr ? e->Message : String::Empty);
+		StringBuilder sb;
+		marshal_context ctx;
+		ExceptionData^ e = HexChatInternal::GetException(gcnew String(word[3]));
+
+		if (e == nullptr) {
+			hexchat_printf(ph, "Error ID %s not found.", word[3]);
+		} else {
+			sb.AppendFormat("Uncaught {0} in plugin: {1}", e->Type, e->Message);
 			sb.AppendLine();
 			sb.Append(e->StackTrace);
 
-			while (e->InnerException != nullptr) {
-				e = e->InnerException;
+			while (e->InnerData != nullptr) {
+				e = e->InnerData;
 				sb.AppendLine();
-				sb.AppendFormat("Inner Exception: {0}", e->Message != nullptr ? e->Message : String::Empty);
+				sb.AppendFormat("Inner Exception {0}: {1}", e->Type, e->Message);
 				sb.AppendLine();
 				sb.Append(e->StackTrace);
 			}
 
 			hexchat_print(ph, ctx.marshal_as<const char*>(sb.ToString()));
-		} catch (KeyNotFoundException^) {
-			hexchat_printf(ph, "Error ID %s not found.", word[3]);
 		}
+#ifdef _DEBUG
+	} else if (!stricmp(word[2], "debug")) {
+		HexChatInternal::DebugCommand(gcnew String(word_eol[3]));
+		return HEXCHAT_EAT_ALL;
+#endif
 	} else {
 		hexchat_print(ph, "Usage: /DOTNET LOAD|UNLOAD|RELOAD|ERRINFO <param> - see /HELP DOTNET for more details.");
 	}

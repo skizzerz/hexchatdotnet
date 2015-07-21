@@ -18,38 +18,65 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 #pragma once
 
-using namespace System;
-using namespace System::Reflection;
-using namespace System::Collections::Generic;
+struct ICLRRuntimeHost;
 
 namespace HexChatDotNet {
 	ref class HexChatPlugin;
+	ref class ExceptionData;
 	enum class Eat;
 
 	ref class HexChatInternal abstract sealed {
-		static List<Tuple<AppDomain^, HexChatPlugin^>^>^ _loadedPlugins;
-		static Dictionary<String^, Tuple<String^, IntPtr>^>^ _pluginMap;
-		static Dictionary<String^, Exception^>^ _exceptions;
-		static LinkedList<String^>^ _exceptionKeys;
+		static System::Collections::Generic::List<System::Tuple<System::AppDomain^, HexChatPlugin^>^>^ _loadedPlugins;
+		static System::Collections::Generic::Dictionary<System::String^, System::Tuple<System::String^, System::IntPtr>^>^ _pluginMap;
+		static System::Collections::Generic::Dictionary<System::String^, ExceptionData^>^ _exceptions;
+		static System::Collections::Generic::LinkedList<System::String^>^ _exceptionKeys;
+		static bool _saveExceptionDetails;
+		static ICLRRuntimeHost* _host;
 
 		static void FindTypeInAssembly();
 
-	internal:
 		static HexChatInternal();
 
-		static String^ RegisterException(Exception^ e);
-		static Exception^ GetException(String^ key);
+	internal:
+		static int ReportExceptionInternal(System::String^ serialized);
+		static System::String^ RegisterException(ExceptionData^ e);
+		static System::String^ RegisterException(System::Exception^ e);
+		static ExceptionData^ GetException(System::String^ key);
 
-		static String^ GetInfo(const char* id);
+		static System::String^ GetInfo(const char* id);
 		
-		static Assembly^ LoadDependencies(Object^ sender, ResolveEventArgs^ args);
-		static Assembly^ ReflectionOnlyLoadDependencies(Object^ sender, ResolveEventArgs^ args);
+		static System::Reflection::Assembly^ LoadDependencies(System::Object^ sender, System::ResolveEventArgs^ args);
+		static System::Reflection::Assembly^ ReflectionOnlyLoadDependencies(System::Object^ sender, System::ResolveEventArgs^ args);
 
-		static Eat Load(String^ path);
-		static Eat Reload(String^ path);
-		static Eat Unload(String^ path);
+		static Eat Load(System::String^ path);
+		static Eat Reload(System::String^ path);
+		static Eat Unload(System::String^ path);
 
 		static void LoadAll();
 		static void UnloadAll();
+
+#ifdef _DEBUG
+		static void DebugCommand(System::String^ param);
+		static void PrintAssemblies();
+#endif
+
+	public:
+		static void ReportException(System::Exception^ e);
+	};
+
+	[System::Runtime::Serialization::DataContract]
+	ref class ExceptionData {
+	public:
+		[System::Runtime::Serialization::DataMember]
+		System::String^ Type;
+		[System::Runtime::Serialization::DataMember]
+		System::String^ Message;
+		[System::Runtime::Serialization::DataMember]
+		System::String^ StackTrace;
+		[System::Runtime::Serialization::DataMember]
+		ExceptionData^ InnerData;
+
+		ExceptionData() : Type(nullptr), Message(nullptr), StackTrace(nullptr), InnerData(nullptr) { }
+		ExceptionData(System::Exception^ e);
 	};
 }

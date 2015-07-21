@@ -64,7 +64,7 @@ namespace HexChatDotNet {
 	}
 
 	template<>
-	static void* return_last(void* x) {
+	void* return_last(void* x) {
 		return x;
 	}
 
@@ -115,9 +115,7 @@ namespace HexChatDotNet {
 
 			return static_cast<int>(eat);
 		} catch (Exception^ e) {
-			String^ errid = HexChatInternal::RegisterException(e);
-			HexChat::Print("An exception occurred in a plugin while processing command {0}: {1}", _name, e->Message);
-			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
+			HexChatInternal::ReportException(e);
 
 			return HEXCHAT_EAT_NONE;
 		}
@@ -158,9 +156,7 @@ namespace HexChatDotNet {
 
 			return static_cast<int>(eat);
 		} catch (Exception^ e) {
-			String^ errid = HexChatInternal::RegisterException(e);
-			HexChat::Print("An exception occurred in a plugin while processing print hook {0}: {1}", _eventName, e->Message);
-			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
+			HexChatInternal::ReportException(e);
 
 			// TODO: automatically remove hook if we're getting spammed by errors from it
 
@@ -205,9 +201,7 @@ namespace HexChatDotNet {
 
 			return static_cast<int>(eat);
 		} catch (Exception^ e) {
-			String^ errid = HexChatInternal::RegisterException(e);
-			HexChat::Print("An exception occurred in a plugin while processing server hook {0}: {1}", _eventName, e->Message);
-			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
+			HexChatInternal::ReportException(e);
 
 			// TODO: automatically remove hook if we're getting spammed by errors from it
 
@@ -229,9 +223,7 @@ namespace HexChatDotNet {
 
 			return static_cast<int>(timer);
 		} catch (Exception^ e) {
-			String^ errid = HexChatInternal::RegisterException(e);
-			HexChat::Print("An exception occurred in a plugin while processing timer hook: {0}", e->Message);
-			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
+			HexChatInternal::ReportException(e);
 
 			return 0; // remove the offending timer
 		}

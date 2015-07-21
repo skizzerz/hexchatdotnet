@@ -18,7 +18,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include "stdafx.h"
+#include <mscoree.h>
+#include <metahost.h>
 #include "hcdotnet.h"
+
+#pragma comment(lib, "mscoree.lib")
 
 #define STORED_EXCEPTIONS 100
 #define ASSEMBLY_PATH_KEY "HCDOTNET_ASSEMBLY_PATH"
@@ -28,20 +32,119 @@ using namespace System;
 using namespace System::Collections::Generic;
 using namespace System::Reflection;
 using namespace System::IO;
+using namespace System::Text;
+using namespace System::Xml;
+using namespace System::Runtime::Serialization;
+using namespace msclr::interop;
 
 namespace HexChatDotNet {
 	static HexChatInternal::HexChatInternal() {
 		_loadedPlugins = gcnew List<Tuple<AppDomain^, HexChatPlugin^>^>();
 		_pluginMap = gcnew Dictionary<String^, Tuple<String^, IntPtr>^>();
-		_exceptions = gcnew Dictionary<String^, Exception^>();
+		_exceptions = gcnew Dictionary<String^, ExceptionData^>();
 		_exceptionKeys = gcnew LinkedList<String^>();
+		_saveExceptionDetails = false;
+
+		AppDomain::CurrentDomain->AssemblyResolve += gcnew ResolveEventHandler(&HexChatDotNet::HexChatInternal::LoadDependencies);
+
+		// Locate our default AppDomain using COM
+		marshal_context ctx;
+		const wchar_t* version = ctx.marshal_as<const wchar_t*>(Assembly::GetExecutingAssembly()->ImageRuntimeVersion);
+		
+		ICLRMetaHost* metaHost = nullptr;
+		ICLRRuntimeInfo* info = nullptr;
+		ICLRRuntimeHost* host = nullptr;
+		int loaded = 0;
+
+		if (S_OK != CLRCreateInstance(CLSID_CLRMetaHost, IID_ICLRMetaHost, reinterpret_cast<void**>(&metaHost))) {
+			goto cleanup;
+		}
+
+		if (S_OK != metaHost->GetRuntime(version, IID_ICLRRuntimeInfo, reinterpret_cast<void**>(&info))) {
+			goto cleanup;
+		}
+
+		if (S_OK != info->IsLoaded(GetCurrentProcess(), &loaded)) {
+			goto cleanup;
+		}
+
+		if (!loaded) {
+			goto cleanup;
+		}
+
+		if (S_OK != info->GetInterface(CLSID_CLRRuntimeHost, IID_ICLRRuntimeHost, reinterpret_cast<void**>(&host))) {
+			goto cleanup;
+		}
+
+		// we have a host!
+		_host = host;
+		_saveExceptionDetails = true;
+
+	cleanup:
+		if (metaHost != nullptr) {
+			metaHost->Release();
+		}
+
+		if (info != nullptr) {
+			info->Release();
+		}
 	}
 
 	String^ HexChatInternal::GetInfo(const char* id) {
 		return gcnew String(hexchat_get_info(ph, id));
 	}
 
-	String^ HexChatInternal::RegisterException(Exception^ e) {
+	void HexChatInternal::ReportException(Exception^ e) {
+		if (_saveExceptionDetails) {
+			ExceptionData^ data = gcnew ExceptionData(e);
+			DataContractSerializer^ serializer = gcnew DataContractSerializer(ExceptionData::typeid);
+			StringWriter^ writer = gcnew StringWriter();
+			XmlTextWriter^ xml = gcnew XmlTextWriter(writer);
+			serializer->WriteObject(xml, data);
+
+			marshal_context ctx;
+			const wchar_t* location = ctx.marshal_as<const wchar_t*>(Assembly::GetExecutingAssembly()->Location);
+			const wchar_t* arg = ctx.marshal_as<const wchar_t*>(writer->ToString());
+			int retval = 0;
+			HRESULT res = _host->ExecuteInDefaultAppDomain(location, L"HexChatDotNet.HexChatInternal", L"ReportExceptionInternal", arg, reinterpret_cast<DWORD*>(&retval));
+
+			if (res != S_OK) {
+				_saveExceptionDetails = false;
+				_host->Release();
+				_host = nullptr;
+				ReportException(e);
+			}
+		} else {
+			StringBuilder sb;
+
+			sb.AppendFormat("Uncaught {0} in plugin: {1}", e->GetType()->Name, e->Message != nullptr ? e->Message : String::Empty);
+			sb.AppendLine();
+			sb.Append(e->StackTrace);
+
+			while (e->InnerException != nullptr) {
+				e = e->InnerException;
+				sb.AppendLine();
+				sb.AppendFormat("Inner Exception {0}: {1}", e->GetType()->Name, e->Message != nullptr ? e->Message : String::Empty);
+				sb.AppendLine();
+				sb.Append(e->StackTrace);
+			}
+
+			HexChat::Print(sb.ToString());
+		}
+	}
+
+	int HexChatInternal::ReportExceptionInternal(String^ serialized) {
+		DataContractSerializer^ serializer = gcnew DataContractSerializer(ExceptionData::typeid);
+		ExceptionData^ data = safe_cast<ExceptionData^>(serializer->ReadObject(gcnew XmlTextReader(gcnew StringReader(serialized)), true));
+		String^ errid = RegisterException(data);
+
+		HexChat::Print("Uncaught {0} in plugin: {1}", data->Type, data->Message);
+		HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
+
+		return 0;
+	}
+
+	String^ HexChatInternal::RegisterException(ExceptionData^ e) {
 		// TODO: allow number of stored exceptions to be user-configurable
 		while (_exceptions->Count >= STORED_EXCEPTIONS) {
 			// prune the N oldest exceptions until we have STORED_EXCEPTIONS - 1 stored
@@ -63,9 +166,15 @@ namespace HexChatDotNet {
 		return key;
 	}
 
-	Exception^ HexChatInternal::GetException(String^ key) {
-		Exception^ e;
-		_exceptions->TryGetValue(key, e);
+	String^ HexChatInternal::RegisterException(Exception^ e) {
+		return RegisterException(gcnew ExceptionData(e));
+	}
+
+	ExceptionData^ HexChatInternal::GetException(String^ key) {
+		ExceptionData^ e;
+		if (!_exceptions->TryGetValue(key, e)) {
+			return nullptr;
+		}
 
 		return e;
 	}
@@ -105,10 +214,10 @@ namespace HexChatDotNet {
 			if (!found) {
 				AppDomain::CurrentDomain->SetData(TYPE_NAME_KEY, nullptr);
 			}
+		} catch (FileNotFoundException^) {
+			HexChat::Print("Error loading plugin {0}: File does not exist or is otherwise inaccessible.", assemblyPath);
 		} catch (Exception^ e) {
-			String^ errid = RegisterException(e);
-			HexChat::Print("Exception occurred when scanning plugins: {0}", e->Message);
-			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
+			ReportException(e);
 		}
 	}
 
@@ -152,24 +261,21 @@ namespace HexChatDotNet {
 		// Short-circuit if we aren't trying to load a dll
 		if (!path->EndsWith(".dll")) {
 			return Eat::None;
+		} else if (!Path::IsPathRooted(path)) {
+			path = Path::Combine(HexChat::ConfigDir, "addons", "dotnet", path);
 		}
 
 		HexChatPlugin^ plugin = nullptr;
 		AppDomain^ addonDomain = nullptr;
 		AppDomain^ reflectionDomain = nullptr;
 		String^ typeName = nullptr;
+		AppDomainSetup^ setup = gcnew AppDomainSetup();
 		
 		try {
-			AppDomainSetup^ setup = gcnew AppDomainSetup();
 			setup->ApplicationBase = Path::GetDirectoryName(Assembly::GetExecutingAssembly()->Location);
-
-			addonDomain = AppDomain::CreateDomain(path, nullptr, setup);
 			reflectionDomain = AppDomain::CreateDomain("ReflectionDomain", nullptr, setup);
 
-			AppDomain::CurrentDomain->AssemblyResolve += gcnew ResolveEventHandler(&HexChatDotNet::HexChatInternal::LoadDependencies);
-			addonDomain->AssemblyResolve += gcnew ResolveEventHandler(&HexChatDotNet::HexChatInternal::LoadDependencies);
 			reflectionDomain->ReflectionOnlyAssemblyResolve += gcnew ResolveEventHandler(&HexChatDotNet::HexChatInternal::ReflectionOnlyLoadDependencies);
-			
 			reflectionDomain->SetData(ASSEMBLY_PATH_KEY, path);
 			reflectionDomain->DoCallBack(gcnew CrossAppDomainDelegate(FindTypeInAssembly));
 			typeName = safe_cast<String^>(reflectionDomain->GetData(TYPE_NAME_KEY));
@@ -182,11 +288,14 @@ namespace HexChatDotNet {
 
 		if (typeName != nullptr) {
 			try {
+				addonDomain = AppDomain::CreateDomain(path, nullptr, setup);
+				addonDomain->AssemblyResolve += gcnew ResolveEventHandler(&HexChatDotNet::HexChatInternal::LoadDependencies);
+
 				plugin = safe_cast<HexChatPlugin^>(addonDomain->CreateInstanceFromAndUnwrap(path, typeName));
 				plugin->Init();
-				IntPtr ph = HexChat::PluginGuiAdd(path, plugin->Name, plugin->Desc, plugin->Version);
+				IntPtr _ph = HexChat::PluginGuiAdd(path, plugin->Name, plugin->Desc, plugin->Version);
 				_loadedPlugins->Add(gcnew Tuple<AppDomain^, HexChatPlugin^>(addonDomain, plugin));
-				_pluginMap[path] = gcnew Tuple<String^, IntPtr>(plugin->Name, ph);
+				_pluginMap[path] = gcnew Tuple<String^, IntPtr>(plugin->Name, _ph);
 			} catch (Exception^ e) {
 				String^ errid = RegisterException(e);
 				HexChat::Print("Exception occured when loading plugin: {0}", e->Message);
@@ -206,83 +315,108 @@ namespace HexChatDotNet {
 	}
 
 	Eat HexChatInternal::Reload(String^ path) {
-		bool ourPlugin = false;
+		try {
+			bool ourPlugin = false;
 
-		if (!path->EndsWith(".dll")) {
-			// given a plugin name instead of path, find the path given the name
-			for each (auto kvp in _pluginMap) {
-				if (kvp.Value->Item1 == path) {
-					path = kvp.Key;
-					ourPlugin = true;
-					break;
-				}
+			if (path->EndsWith(".dll") && !Path::IsPathRooted(path)) {
+				path = Path::Combine(HexChat::ConfigDir, "addons", "dotnet", path);
 			}
-		} else {
-			for each (auto t in _loadedPlugins) {
-				if (_pluginMap->ContainsKey(path)) {
-					ourPlugin = true;
-					break;
+
+			if (!path->EndsWith(".dll")) {
+				// given a plugin name instead of path, find the path given the name
+				for each (auto kvp in _pluginMap) {
+					if (kvp.Value->Item1 == path) {
+						path = kvp.Key;
+						ourPlugin = true;
+						break;
+					}
 				}
+			} else if (_pluginMap->ContainsKey(path)) {
+				ourPlugin = true;
 			}
+
+			if (!ourPlugin) {
+				return Eat::None;
+			}
+
+			Unload(path);
+			Load(path);
+
+			return Eat::All;
+		} catch (Exception^ e) {
+			String^ errid = RegisterException(e);
+
+			HexChat::Print("{0} has occurred during /reload: {1}", e->GetType()->Name, e->Message);
+			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
 		}
 
-		if (!ourPlugin) {
-			return Eat::None;
-		}
-
-		Unload(path);
-		Load(path);
-
-		return Eat::All;
+		return Eat::None;
 	}
 
 	Eat HexChatInternal::Unload(String^ path) {
 		int index = -1;
 		AppDomain^ pluginDomain = nullptr;
 		HexChatPlugin^ plugin = nullptr;
+		IntPtr pluginHandle = IntPtr::Zero;
 
-		if (!path->EndsWith(".dll")) {
-			// given a plugin name instead of path, find the path given the name
-			for (int i = 0; i < _loadedPlugins->Count; ++i) {
-				if (_loadedPlugins[i]->Item2->Name == path) {
-					pluginDomain = _loadedPlugins[i]->Item1;
-					plugin = _loadedPlugins[i]->Item2;
-					index = i;
+		if (path->EndsWith(".dll") && !Path::IsPathRooted(path)) {
+			path = Path::Combine(HexChat::ConfigDir, "addons", "dotnet", path);
+		}
 
-					// update path to be the real path so we can remove from pluginMap
-					for each (auto kvp in _pluginMap) {
-						if (kvp.Value->Item1 == path) {
-							path = kvp.Key;
+		try {
+			if (!path->EndsWith(".dll")) {
+				// given a plugin name instead of path, find the path given the name
+				for (int i = 0; i < _loadedPlugins->Count; ++i) {
+					if (_loadedPlugins[i]->Item2->Name == path) {
+						pluginDomain = _loadedPlugins[i]->Item1;
+						plugin = _loadedPlugins[i]->Item2;
+						index = i;
+
+						// update path to be the real path so we can remove from pluginMap
+						for each (auto kvp in _pluginMap) {
+							if (kvp.Value->Item1 == path) {
+								path = kvp.Key;
+								pluginHandle = kvp.Value->Item2;
+								break;
+							}
+						}
+						break;
+					}
+				}
+			} else {
+				Tuple<String^, IntPtr>^ value;
+				if (_pluginMap->TryGetValue(path, value)) {
+					for (int i = 0; i < _loadedPlugins->Count; ++i) {
+						if (_loadedPlugins[i]->Item2->Name == value->Item1) {
+							pluginDomain = _loadedPlugins[i]->Item1;
+							plugin = _loadedPlugins[i]->Item2;
+							pluginHandle = value->Item2;
+							index = i;
 							break;
 						}
 					}
-					break;
 				}
 			}
-		} else {
-			String^ name = _pluginMap[path]->Item1;
 
-			for (int i = 0; i < _loadedPlugins->Count; ++i) {
-				if (_loadedPlugins[i]->Item2->Name == name) {
-					pluginDomain = _loadedPlugins[i]->Item1;
-					plugin = _loadedPlugins[i]->Item2;
-					index = i;
-					break;
-				}
+			if (index == -1 || pluginHandle == IntPtr::Zero) {
+				return Eat::None;
 			}
+
+			delete plugin;
+			HexChat::PluginGuiRemove(pluginHandle);
+			AppDomain::Unload(pluginDomain);
+			_loadedPlugins->RemoveAt(index);
+			_pluginMap->Remove(path);
+
+			return Eat::All;
+		} catch (Exception^ e) {
+			String^ errid = RegisterException(e);
+
+			HexChat::Print("{0} has occurred during /unload: {1}", e->GetType()->Name, e->Message);
+			HexChat::Print("Execute \"/dotnet errinfo {0}\" for more detailed information.", errid);
 		}
 
-		if (index == -1) {
-			return Eat::None;
-		}
-
-		delete plugin;
-		HexChat::PluginGuiRemove(_pluginMap[path]->Item2);
-		AppDomain::Unload(pluginDomain);
-		_loadedPlugins->RemoveAt(index);
-		_pluginMap->Remove(path);
-
-		return Eat::All;
+		return Eat::None;
 	}
 
 	void HexChatInternal::LoadAll() {
@@ -307,6 +441,59 @@ namespace HexChatDotNet {
 
 		for each (String^ path in paths) {
 			Unload(path);
+		}
+	}
+
+#ifdef _DEBUG
+	void HexChatInternal::PrintAssemblies() {
+		for each (Assembly^ a in AppDomain::CurrentDomain->GetAssemblies()) {
+			HexChat::Print(a->FullName);
+		}
+	}
+
+	void HexChatInternal::DebugCommand(String^ param) {
+		try {
+			if (param == "loadedAssemblies") {
+				HexChat::Print("Current Domain: {0}", AppDomain::CurrentDomain->FriendlyName);
+				PrintAssemblies();
+
+				for each (Tuple<AppDomain^, HexChatPlugin^>^ p in _loadedPlugins) {
+					HexChat::Print("Plugin: {0}", p->Item2->Name);
+					HexChat::Print("AppDomain: {0}", p->Item1->FriendlyName);
+
+					// TODO: Figure out why this is throwing NullReferenceExceptions :(
+					p->Item1->DoCallBack(gcnew CrossAppDomainDelegate(PrintAssemblies));
+				}
+			}
+		} catch (Exception^ e) {
+			StringBuilder sb;
+
+			sb.AppendFormat("{0}: {1}", e->GetType()->Name, e->Message != nullptr ? e->Message : String::Empty);
+			sb.AppendLine();
+			sb.Append(e->StackTrace);
+
+			while (e->InnerException != nullptr) {
+				e = e->InnerException;
+				sb.AppendLine();
+				sb.AppendFormat("Inner Exception {0}: {1}", e->GetType()->Name, e->Message != nullptr ? e->Message : String::Empty);
+				sb.AppendLine();
+				sb.Append(e->StackTrace);
+			}
+
+			HexChat::Print(sb.ToString());
+		}
+	}
+#endif
+
+	ExceptionData::ExceptionData(Exception^ e) {
+		Type = e->GetType()->Name;
+		Message = e->Message != nullptr ? e->Message : String::Empty;
+		StackTrace = e->StackTrace;
+
+		if (e->InnerException != nullptr) {
+			InnerData = gcnew ExceptionData(e->InnerException);
+		} else {
+			InnerData = nullptr;
 		}
 	}
 }
