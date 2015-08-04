@@ -982,12 +982,13 @@ namespace HexChatDotNet {
 	internal:
 		void* _handle;
 		HexChatContext(void* handle) : _handle(handle) { };
+		property System::IntPtr GtkWinPtr { System::IntPtr get(); }
+		property System::IntPtr WinPtr { System::IntPtr get(); }
 
 	public:
 		property System::String^ AwayReason { System::String^ get(); }
 		property System::String^ Channel { System::String^ get(); }
 		property System::String^ Charset { System::String^ get(); }
-		property System::IntPtr GtkWinPtr { System::IntPtr get(); }
 		property System::String^ Host { System::String^ get(); }
 		property System::String^ InputBoxText { System::String^ get(); void set(System::String^ value); }
 		property ChannelModes^ ChannelModes { HexChatDotNet::ChannelModes^ get(); }
@@ -996,7 +997,6 @@ namespace HexChatDotNet {
 		property System::String^ NickServPassword { System::String^ get(); }
 		property System::String^ Server { System::String^ get(); }
 		property System::String^ Topic { System::String^ get(); }
-		property System::IntPtr WinPtr { System::IntPtr get(); }
 		property WindowStatus WindowStatus { HexChatDotNet::WindowStatus get(); }
 
 		void SetCursorPos(int newPos, bool relative);

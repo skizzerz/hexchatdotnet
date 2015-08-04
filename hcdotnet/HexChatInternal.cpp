@@ -20,9 +20,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "stdafx.h"
 #include <mscoree.h>
 #include <metahost.h>
+#include <Shlwapi.h>
 #include "hcdotnet.h"
 
 #pragma comment(lib, "mscoree.lib")
+#pragma comment(lib, "Shlwapi.lib")
+
+// NOTE: This uses deprecated APIs but the replacements are part of Windows 8
+// As we support Vista and above for now, we must use the deprecated variants
 
 #define STORED_EXCEPTIONS 100
 #define ASSEMBLY_PATH_KEY "HCDOTNET_ASSEMBLY_PATH"
@@ -461,9 +466,34 @@ namespace HexChatDotNet {
 					HexChat::Print("Plugin: {0}", p->Item2->Name);
 					HexChat::Print("AppDomain: {0}", p->Item1->FriendlyName);
 
-					// TODO: Figure out why this is throwing NullReferenceExceptions :(
 					p->Item1->DoCallBack(gcnew CrossAppDomainDelegate(PrintAssemblies));
 				}
+			} else if (param == "dirs") {
+				// GetModuleFileName doesn't support a mode where it tells us the maximum buffer size required,
+				// so instead we harcode the true maximum path length for the unicode variant of the Windows API (32767)
+				wchar_t* path = new wchar_t[32767];
+
+				if (GetModuleFileNameW(NULL, path, 32767)) {
+					// ensure this is null-terminated path and then strip out the filename
+					path[32766] = 0;
+					PathRemoveFileSpecW(path);
+					
+					int bufsize = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, path, -1, NULL, 0, NULL, NULL);
+
+					if (bufsize == 0) {
+						return;
+					}
+
+					char* buf = new char[bufsize];
+					
+					if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, path, -1, buf, bufsize, NULL, NULL)) {
+						hexchat_print(ph, buf);
+					}
+
+					delete[] buf;
+				}
+
+				delete[] path;
 			}
 		} catch (Exception^ e) {
 			StringBuilder sb;

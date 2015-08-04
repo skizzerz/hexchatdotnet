@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HexChatDotNet;
+using HexChatDotNet.Graphics;
 
 namespace ExamplePlugin
 {
@@ -63,14 +64,9 @@ namespace ExamplePlugin
 
 		public Eat Woof(string[] words, string[] wordsEol)
 		{
-			throw new NoDogsAllowedException("Dogs aren't allowed");
-		}
-	}
-
-	public class NoDogsAllowedException : Exception
-	{
-		public NoDogsAllowedException(string message) : base(message)
-		{
+			HexChatWindow window = HexChat.GetContext().GetWindow();
+			window.MessageBox("Woof", "Woof!", null);
+			return Eat.All;
 		}
 	}
 }

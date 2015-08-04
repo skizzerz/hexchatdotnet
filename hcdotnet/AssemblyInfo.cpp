@@ -33,7 +33,7 @@ using namespace System::Security::Permissions;
 // You can specify all the value or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
 
-[assembly:AssemblyVersionAttribute(MAJOR_VERSION "." MINOR_VERSION ".*")];
+[assembly:AssemblyVersionAttribute(MAJOR_VERSION "." MINOR_VERSION ".0.0")];
 [assembly:AssemblyInformationalVersionAttribute(API_VERSION)]
 
 [assembly:ComVisible(false)];
