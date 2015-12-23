@@ -1,0 +1,1016 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BEBA7DC2-52E5-495C-B5FA-D9DC4AA9E041}</ProjectGuid>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>hcdotnetgraphics</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <LinkKeyFile>$(SolutionDir)hcdotnet.snk</LinkKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)vendor\atk-1.0;$(ProjectDir)vendor\gail-1.0;$(ProjectDir)vendor\gdk-pixbuf-2.0;$(ProjectDir)vendor\gio-win32-2.0;$(ProjectDir)vendor\glib-2.0;$(ProjectDir)vendor\gtk-2.0;$(ProjectDir)vendor\pango-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalOptions>
+      </AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>atk-1.0.lib;cairo.lib;cairo-gobject.lib;fontconfig.lib;freetype.lib;gailutil-2.0.lib;gdk_pixbuf-2.0.lib;gdk-win32-2.0.lib;gio-2.0.lib;glib-2.0.lib;gmodule-2.0.lib;gobject-2.0.lib;gthread-2.0.lib;gtk-win32-2.0.lib;harfbuzz.lib;iconv.lib;libeay32.lib;libenchant.lib;libffi.lib;libintl.lib;libpng16.lib;libxml2.lib;pango-1.0.lib;pangocairo-1.0.lib;pangoft2-1.0.lib;pangowin32-1.0.lib;pixman-1.lib;ssleay32.lib;zlib1.lib;zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="hcdotnet.graphics.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atk-enum-types.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atk.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkaction.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkcomponent.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkdocument.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkeditabletext.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkgobjectaccessible.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkhyperlink.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkhyperlinkimpl.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkhypertext.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkimage.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkmisc.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atknoopobject.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atknoopobjectfactory.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkobject.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkobjectfactory.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkplug.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkrange.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkregistry.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkrelation.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkrelationset.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkrelationtype.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkselection.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atksocket.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkstate.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkstateset.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkstreamablecontent.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atktable.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atktablecell.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atktext.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkutil.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkvalue.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkversion.h" />
+    <ClInclude Include="vendor\atk-1.0\atk\atkwindow.h" />
+    <ClInclude Include="vendor\cairo-deprecated.h" />
+    <ClInclude Include="vendor\cairo-features.h" />
+    <ClInclude Include="vendor\cairo-ft.h" />
+    <ClInclude Include="vendor\cairo-gobject.h" />
+    <ClInclude Include="vendor\cairo-pdf.h" />
+    <ClInclude Include="vendor\cairo-ps.h" />
+    <ClInclude Include="vendor\cairo-script.h" />
+    <ClInclude Include="vendor\cairo-svg.h" />
+    <ClInclude Include="vendor\cairo-tee.h" />
+    <ClInclude Include="vendor\cairo-version.h" />
+    <ClInclude Include="vendor\cairo-win32.h" />
+    <ClInclude Include="vendor\cairo-xml.h" />
+    <ClInclude Include="vendor\cairo.h" />
+    <ClInclude Include="vendor\config\ftconfig.h" />
+    <ClInclude Include="vendor\config\ftheader.h" />
+    <ClInclude Include="vendor\config\ftmodule.h" />
+    <ClInclude Include="vendor\config\ftoption.h" />
+    <ClInclude Include="vendor\config\ftstdlib.h" />
+    <ClInclude Include="vendor\enchant\enchant++.h" />
+    <ClInclude Include="vendor\enchant\enchant-provider.h" />
+    <ClInclude Include="vendor\enchant\enchant.h" />
+    <ClInclude Include="vendor\ffi.h" />
+    <ClInclude Include="vendor\ffitarget.h" />
+    <ClInclude Include="vendor\fontconfig\fcfreetype.h" />
+    <ClInclude Include="vendor\fontconfig\fcprivate.h" />
+    <ClInclude Include="vendor\fontconfig\fontconfig.h" />
+    <ClInclude Include="vendor\freetype.h" />
+    <ClInclude Include="vendor\ft2build.h" />
+    <ClInclude Include="vendor\ftadvanc.h" />
+    <ClInclude Include="vendor\ftautoh.h" />
+    <ClInclude Include="vendor\ftbbox.h" />
+    <ClInclude Include="vendor\ftbdf.h" />
+    <ClInclude Include="vendor\ftbitmap.h" />
+    <ClInclude Include="vendor\ftbzip2.h" />
+    <ClInclude Include="vendor\ftcache.h" />
+    <ClInclude Include="vendor\ftcffdrv.h" />
+    <ClInclude Include="vendor\ftchapters.h" />
+    <ClInclude Include="vendor\ftcid.h" />
+    <ClInclude Include="vendor\fterrdef.h" />
+    <ClInclude Include="vendor\fterrors.h" />
+    <ClInclude Include="vendor\ftfntfmt.h" />
+    <ClInclude Include="vendor\ftgasp.h" />
+    <ClInclude Include="vendor\ftglyph.h" />
+    <ClInclude Include="vendor\ftgxval.h" />
+    <ClInclude Include="vendor\ftgzip.h" />
+    <ClInclude Include="vendor\ftimage.h" />
+    <ClInclude Include="vendor\ftincrem.h" />
+    <ClInclude Include="vendor\ftlcdfil.h" />
+    <ClInclude Include="vendor\ftlist.h" />
+    <ClInclude Include="vendor\ftlzw.h" />
+    <ClInclude Include="vendor\ftmac.h" />
+    <ClInclude Include="vendor\ftmm.h" />
+    <ClInclude Include="vendor\ftmodapi.h" />
+    <ClInclude Include="vendor\ftmoderr.h" />
+    <ClInclude Include="vendor\ftotval.h" />
+    <ClInclude Include="vendor\ftoutln.h" />
+    <ClInclude Include="vendor\ftpfr.h" />
+    <ClInclude Include="vendor\ftrender.h" />
+    <ClInclude Include="vendor\ftsizes.h" />
+    <ClInclude Include="vendor\ftsnames.h" />
+    <ClInclude Include="vendor\ftstroke.h" />
+    <ClInclude Include="vendor\ftsynth.h" />
+    <ClInclude Include="vendor\ftsystem.h" />
+    <ClInclude Include="vendor\fttrigon.h" />
+    <ClInclude Include="vendor\ftttdrv.h" />
+    <ClInclude Include="vendor\fttypes.h" />
+    <ClInclude Include="vendor\ftwinfnt.h" />
+    <ClInclude Include="vendor\gail-1.0\libgail-util\gail-util.h" />
+    <ClInclude Include="vendor\gail-1.0\libgail-util\gailmisc.h" />
+    <ClInclude Include="vendor\gail-1.0\libgail-util\gailtextutil.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-animation.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-core.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-enum-types.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-features.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-io.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-loader.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-marshal.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-simple-anim.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf-transform.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixbuf.h" />
+    <ClInclude Include="vendor\gdk-pixbuf-2.0\gdk-pixbuf\gdk-pixdata.h" />
+    <ClInclude Include="vendor\gio-win32-2.0\gio\gwin32inputstream.h" />
+    <ClInclude Include="vendor\gio-win32-2.0\gio\gwin32outputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gaction.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gactiongroup.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gactiongroupexporter.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gactionmap.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gappinfo.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gapplication.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gapplicationcommandline.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gasyncinitable.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gasyncresult.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gbufferedinputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gbufferedoutputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gbytesicon.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gcancellable.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gcharsetconverter.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gcontenttype.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gconverter.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gconverterinputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gconverteroutputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gcredentials.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdatainputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdataoutputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusactiongroup.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusaddress.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusauthobserver.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusconnection.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbuserror.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusinterface.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusinterfaceskeleton.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusintrospection.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusmenumodel.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusmessage.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusmethodinvocation.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusnameowning.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusnamewatching.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusobject.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusobjectmanager.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusobjectmanagerclient.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusobjectmanagerserver.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusobjectproxy.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusobjectskeleton.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusproxy.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusserver.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdbusutils.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gdrive.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gemblem.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gemblemedicon.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfile.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfileattribute.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfileenumerator.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfileicon.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfileinfo.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfileinputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfileiostream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfilemonitor.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfilenamecompleter.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfileoutputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfilterinputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gfilteroutputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gicon.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\ginetaddress.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\ginetaddressmask.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\ginetsocketaddress.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\ginitable.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\ginputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gio-autocleanups.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gio.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gioenums.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gioenumtypes.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gioerror.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\giomodule.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gioscheduler.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\giostream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\giotypes.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\glistmodel.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gliststore.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gloadableicon.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gmemoryinputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gmemoryoutputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gmenu.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gmenuexporter.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gmenumodel.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gmount.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gmountoperation.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gnativevolumemonitor.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gnetworkaddress.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gnetworking.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gnetworkmonitor.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gnetworkservice.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gnotification.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\goutputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gpermission.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gpollableinputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gpollableoutputstream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gpollableutils.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gpropertyaction.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gproxy.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gproxyaddress.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gproxyaddressenumerator.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gproxyresolver.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gremoteactiongroup.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gresolver.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gresource.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gseekable.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsettings.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsettingsbackend.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsettingsschema.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsimpleaction.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsimpleactiongroup.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsimpleasyncresult.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsimpleiostream.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsimplepermission.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsimpleproxyresolver.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocket.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocketaddress.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocketaddressenumerator.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocketclient.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocketconnectable.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocketconnection.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocketcontrolmessage.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocketlistener.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsocketservice.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsrvtarget.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsubprocess.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gsubprocesslauncher.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtask.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtcpconnection.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtcpwrapperconnection.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtestdbus.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gthemedicon.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gthreadedsocketservice.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlsbackend.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlscertificate.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlsclientconnection.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlsconnection.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlsdatabase.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlsfiledatabase.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlsinteraction.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlspassword.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gtlsserverconnection.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gvfs.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gvolume.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gvolumemonitor.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gzlibcompressor.h" />
+    <ClInclude Include="vendor\glib-2.0\gio\gzlibdecompressor.h" />
+    <ClInclude Include="vendor\glib-2.0\glib-object.h" />
+    <ClInclude Include="vendor\glib-2.0\glib.h" />
+    <ClInclude Include="vendor\glib-2.0\glibconfig.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\deprecated\gallocator.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\deprecated\gcache.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\deprecated\gcompletion.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\deprecated\gmain.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\deprecated\grel.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\deprecated\gthread.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\galloca.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\garray.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gasyncqueue.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gatomic.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gbacktrace.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gbase64.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gbitlock.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gbookmarkfile.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gbytes.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gcharset.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gchecksum.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gconvert.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gdataset.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gdate.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gdatetime.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gdir.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\genviron.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gerror.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gfileutils.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\ggettext.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\ghash.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\ghmac.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\ghook.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\ghostutils.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gi18n-lib.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gi18n.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\giochannel.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gkeyfile.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\glib-autocleanups.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\glist.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gmacros.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gmain.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gmappedfile.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gmarkup.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gmem.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gmessages.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gnode.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\goption.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gpattern.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gpoll.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gprimes.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gprintf.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gqsort.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gquark.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gqueue.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\grand.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gregex.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gscanner.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gsequence.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gshell.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gslice.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gslist.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gspawn.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gstdio.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gstrfuncs.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gstring.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gstringchunk.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gtestutils.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gthread.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gthreadpool.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gtimer.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gtimezone.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gtrashstack.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gtree.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gtypes.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gunicode.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gurifuncs.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gutils.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gvariant.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gvarianttype.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gversion.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gversionmacros.h" />
+    <ClInclude Include="vendor\glib-2.0\glib\gwin32.h" />
+    <ClInclude Include="vendor\glib-2.0\gmodule.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gbinding.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gboxed.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gclosure.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\genums.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\glib-types.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gmarshal.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gobject-autocleanups.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gobject.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gparam.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gparamspecs.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gsignal.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gsourceclosure.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gtype.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gtypemodule.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gtypeplugin.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gvalue.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gvaluearray.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gvaluecollector.h" />
+    <ClInclude Include="vendor\glib-2.0\gobject\gvaluetypes.h" />
+    <ClInclude Include="vendor\glib-2.0\msvc_recommended_pragmas.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdkconfig.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdk.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkapplaunchcontext.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkcairo.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkcolor.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkcursor.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkdisplay.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkdisplaymanager.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkdnd.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkdrawable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkenumtypes.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkevents.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkfont.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkgc.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdki18n.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkimage.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkinput.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkkeys.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkkeysyms-compat.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkkeysyms.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkpango.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkpixbuf.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkpixmap.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkprivate.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkproperty.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkregion.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkrgb.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkscreen.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkselection.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkspawn.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdktestutils.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdktypes.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkvisual.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkwin32.h" />
+    <ClInclude Include="vendor\gtk-2.0\gdk\gdkwindow.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtk.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkaboutdialog.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkaccelgroup.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkaccellabel.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkaccelmap.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkaccessible.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkaction.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkactiongroup.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkactivatable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkadjustment.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkalignment.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkarrow.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkaspectframe.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkassistant.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkbbox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkbin.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkbindings.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkbox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkbuildable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkbuilder.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcalendar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcelleditable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcelllayout.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrenderer.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrendereraccel.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrenderercombo.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrendererpixbuf.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrendererprogress.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrendererspin.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrendererspinner.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrenderertext.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellrenderertoggle.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcellview.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcheckbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcheckmenuitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkclipboard.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkclist.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcolorbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcolorsel.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcolorseldialog.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcombo.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcombobox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcomboboxentry.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcomboboxtext.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcontainer.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkctree.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkcurve.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkdebug.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkdialog.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkdnd.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkdrawingarea.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkeditable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkentry.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkentrybuffer.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkentrycompletion.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkenums.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkeventbox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkexpander.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfilechooser.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfilechooserbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfilechooserdialog.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfilechooserwidget.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfilefilter.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfilesel.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfixed.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfontbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkfontsel.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkframe.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkgamma.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkgc.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhandlebox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhbbox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhbox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhpaned.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhruler.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhscale.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhscrollbar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhseparator.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkhsv.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkiconfactory.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkicontheme.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkiconview.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkimage.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkimagemenuitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkimcontext.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkimcontextsimple.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkimmodule.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkimmulticontext.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkinfobar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkinputdialog.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkinvisible.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkitemfactory.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtklabel.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtklayout.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtklinkbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtklist.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtklistitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkliststore.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmain.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmarshal.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmenu.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmenubar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmenuitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmenushell.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmenutoolbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmessagedialog.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmisc.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmodules.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkmountoperation.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtknotebook.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkobject.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkoffscreenwindow.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkoldeditable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkoptionmenu.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkorientable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkpagesetup.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkpaned.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkpapersize.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkpixmap.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkplug.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkpreview.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkprintcontext.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkprintoperation.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkprintoperationpreview.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkprintsettings.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkprogress.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkprogressbar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkradioaction.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkradiobutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkradiomenuitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkradiotoolbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrange.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrc.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrecentaction.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrecentchooser.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrecentchooserdialog.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrecentchoosermenu.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrecentchooserwidget.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrecentfilter.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkrecentmanager.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkruler.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkscale.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkscalebutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkscrollbar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkscrolledwindow.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkselection.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkseparator.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkseparatormenuitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkseparatortoolitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtksettings.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkshow.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtksignal.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtksizegroup.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtksocket.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkspinbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkspinner.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkstatusbar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkstatusicon.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkstock.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkstyle.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktearoffmenuitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktestutils.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktext.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktextbuffer.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktextbufferrichtext.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktextchild.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktextdisplay.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktextiter.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktextlayout.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktextmark.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktexttag.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktexttagtable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktextview.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktipsquery.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktoggleaction.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktogglebutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktoggletoolbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktoolbar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktoolbutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktoolitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktoolitemgroup.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktoolpalette.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktoolshell.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktooltip.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktooltips.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktree.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreednd.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreeitem.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreemodel.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreemodelfilter.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreemodelsort.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreeselection.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreesortable.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreestore.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreeview.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktreeviewcolumn.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktypebuiltins.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtktypeutils.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkuimanager.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkvbbox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkvbox.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkversion.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkviewport.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkvolumebutton.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkvpaned.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkvruler.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkvscale.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkvscrollbar.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkvseparator.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkwidget.h" />
+    <ClInclude Include="vendor\gtk-2.0\gtk\gtkwindow.h" />
+    <ClInclude Include="vendor\hb-blob.h" />
+    <ClInclude Include="vendor\hb-buffer.h" />
+    <ClInclude Include="vendor\hb-common.h" />
+    <ClInclude Include="vendor\hb-coretext.h" />
+    <ClInclude Include="vendor\hb-deprecated.h" />
+    <ClInclude Include="vendor\hb-face.h" />
+    <ClInclude Include="vendor\hb-font.h" />
+    <ClInclude Include="vendor\hb-ft.h" />
+    <ClInclude Include="vendor\hb-glib.h" />
+    <ClInclude Include="vendor\hb-gobject-enums.h" />
+    <ClInclude Include="vendor\hb-gobject-structs.h" />
+    <ClInclude Include="vendor\hb-gobject.h" />
+    <ClInclude Include="vendor\hb-graphite2.h" />
+    <ClInclude Include="vendor\hb-icu.h" />
+    <ClInclude Include="vendor\hb-ot-font.h" />
+    <ClInclude Include="vendor\hb-ot-layout.h" />
+    <ClInclude Include="vendor\hb-ot-shape.h" />
+    <ClInclude Include="vendor\hb-ot-tag.h" />
+    <ClInclude Include="vendor\hb-ot.h" />
+    <ClInclude Include="vendor\hb-set.h" />
+    <ClInclude Include="vendor\hb-shape-plan.h" />
+    <ClInclude Include="vendor\hb-shape.h" />
+    <ClInclude Include="vendor\hb-unicode.h" />
+    <ClInclude Include="vendor\hb-uniscribe.h" />
+    <ClInclude Include="vendor\hb-version.h" />
+    <ClInclude Include="vendor\hb.h" />
+    <ClInclude Include="vendor\iconv.h" />
+    <ClInclude Include="vendor\internal\autohint.h" />
+    <ClInclude Include="vendor\internal\ftcalc.h" />
+    <ClInclude Include="vendor\internal\ftdebug.h" />
+    <ClInclude Include="vendor\internal\ftdriver.h" />
+    <ClInclude Include="vendor\internal\ftgloadr.h" />
+    <ClInclude Include="vendor\internal\ftmemory.h" />
+    <ClInclude Include="vendor\internal\ftobjs.h" />
+    <ClInclude Include="vendor\internal\ftpic.h" />
+    <ClInclude Include="vendor\internal\ftrfork.h" />
+    <ClInclude Include="vendor\internal\ftserv.h" />
+    <ClInclude Include="vendor\internal\ftstream.h" />
+    <ClInclude Include="vendor\internal\fttrace.h" />
+    <ClInclude Include="vendor\internal\ftvalid.h" />
+    <ClInclude Include="vendor\internal\internal.h" />
+    <ClInclude Include="vendor\internal\psaux.h" />
+    <ClInclude Include="vendor\internal\pshints.h" />
+    <ClInclude Include="vendor\internal\services\svbdf.h" />
+    <ClInclude Include="vendor\internal\services\svcid.h" />
+    <ClInclude Include="vendor\internal\services\svfntfmt.h" />
+    <ClInclude Include="vendor\internal\services\svgldict.h" />
+    <ClInclude Include="vendor\internal\services\svgxval.h" />
+    <ClInclude Include="vendor\internal\services\svkern.h" />
+    <ClInclude Include="vendor\internal\services\svmm.h" />
+    <ClInclude Include="vendor\internal\services\svotval.h" />
+    <ClInclude Include="vendor\internal\services\svpfr.h" />
+    <ClInclude Include="vendor\internal\services\svpostnm.h" />
+    <ClInclude Include="vendor\internal\services\svprop.h" />
+    <ClInclude Include="vendor\internal\services\svpscmap.h" />
+    <ClInclude Include="vendor\internal\services\svpsinfo.h" />
+    <ClInclude Include="vendor\internal\services\svsfnt.h" />
+    <ClInclude Include="vendor\internal\services\svttcmap.h" />
+    <ClInclude Include="vendor\internal\services\svtteng.h" />
+    <ClInclude Include="vendor\internal\services\svttglyf.h" />
+    <ClInclude Include="vendor\internal\services\svwinfnt.h" />
+    <ClInclude Include="vendor\internal\sfnt.h" />
+    <ClInclude Include="vendor\internal\t1types.h" />
+    <ClInclude Include="vendor\internal\tttypes.h" />
+    <ClInclude Include="vendor\libintl.h" />
+    <ClInclude Include="vendor\libxml\c14n.h" />
+    <ClInclude Include="vendor\libxml\catalog.h" />
+    <ClInclude Include="vendor\libxml\chvalid.h" />
+    <ClInclude Include="vendor\libxml\config.h" />
+    <ClInclude Include="vendor\libxml\debugXML.h" />
+    <ClInclude Include="vendor\libxml\dict.h" />
+    <ClInclude Include="vendor\libxml\DOCBparser.h" />
+    <ClInclude Include="vendor\libxml\encoding.h" />
+    <ClInclude Include="vendor\libxml\entities.h" />
+    <ClInclude Include="vendor\libxml\globals.h" />
+    <ClInclude Include="vendor\libxml\hash.h" />
+    <ClInclude Include="vendor\libxml\HTMLparser.h" />
+    <ClInclude Include="vendor\libxml\HTMLtree.h" />
+    <ClInclude Include="vendor\libxml\list.h" />
+    <ClInclude Include="vendor\libxml\nanoftp.h" />
+    <ClInclude Include="vendor\libxml\nanohttp.h" />
+    <ClInclude Include="vendor\libxml\parser.h" />
+    <ClInclude Include="vendor\libxml\parserInternals.h" />
+    <ClInclude Include="vendor\libxml\pattern.h" />
+    <ClInclude Include="vendor\libxml\relaxng.h" />
+    <ClInclude Include="vendor\libxml\SAX.h" />
+    <ClInclude Include="vendor\libxml\SAX2.h" />
+    <ClInclude Include="vendor\libxml\schemasInternals.h" />
+    <ClInclude Include="vendor\libxml\schematron.h" />
+    <ClInclude Include="vendor\libxml\threads.h" />
+    <ClInclude Include="vendor\libxml\tree.h" />
+    <ClInclude Include="vendor\libxml\uri.h" />
+    <ClInclude Include="vendor\libxml\valid.h" />
+    <ClInclude Include="vendor\libxml\wsockcompat.h" />
+    <ClInclude Include="vendor\libxml\xinclude.h" />
+    <ClInclude Include="vendor\libxml\xlink.h" />
+    <ClInclude Include="vendor\libxml\xmlautomata.h" />
+    <ClInclude Include="vendor\libxml\xmlerror.h" />
+    <ClInclude Include="vendor\libxml\xmlexports.h" />
+    <ClInclude Include="vendor\libxml\xmlIO.h" />
+    <ClInclude Include="vendor\libxml\xmlmemory.h" />
+    <ClInclude Include="vendor\libxml\xmlmodule.h" />
+    <ClInclude Include="vendor\libxml\xmlreader.h" />
+    <ClInclude Include="vendor\libxml\xmlregexp.h" />
+    <ClInclude Include="vendor\libxml\xmlsave.h" />
+    <ClInclude Include="vendor\libxml\xmlschemas.h" />
+    <ClInclude Include="vendor\libxml\xmlschemastypes.h" />
+    <ClInclude Include="vendor\libxml\xmlstring.h" />
+    <ClInclude Include="vendor\libxml\xmlunicode.h" />
+    <ClInclude Include="vendor\libxml\xmlversion.h" />
+    <ClInclude Include="vendor\libxml\xmlwriter.h" />
+    <ClInclude Include="vendor\libxml\xpath.h" />
+    <ClInclude Include="vendor\libxml\xpathInternals.h" />
+    <ClInclude Include="vendor\libxml\xpointer.h" />
+    <ClInclude Include="vendor\openssl\aes.h" />
+    <ClInclude Include="vendor\openssl\asn1.h" />
+    <ClInclude Include="vendor\openssl\asn1t.h" />
+    <ClInclude Include="vendor\openssl\asn1_mac.h" />
+    <ClInclude Include="vendor\openssl\bio.h" />
+    <ClInclude Include="vendor\openssl\blowfish.h" />
+    <ClInclude Include="vendor\openssl\bn.h" />
+    <ClInclude Include="vendor\openssl\buffer.h" />
+    <ClInclude Include="vendor\openssl\camellia.h" />
+    <ClInclude Include="vendor\openssl\cast.h" />
+    <ClInclude Include="vendor\openssl\cmac.h" />
+    <ClInclude Include="vendor\openssl\cms.h" />
+    <ClInclude Include="vendor\openssl\comp.h" />
+    <ClInclude Include="vendor\openssl\conf.h" />
+    <ClInclude Include="vendor\openssl\conf_api.h" />
+    <ClInclude Include="vendor\openssl\crypto.h" />
+    <ClInclude Include="vendor\openssl\des.h" />
+    <ClInclude Include="vendor\openssl\des_old.h" />
+    <ClInclude Include="vendor\openssl\dh.h" />
+    <ClInclude Include="vendor\openssl\dsa.h" />
+    <ClInclude Include="vendor\openssl\dso.h" />
+    <ClInclude Include="vendor\openssl\dtls1.h" />
+    <ClInclude Include="vendor\openssl\ebcdic.h" />
+    <ClInclude Include="vendor\openssl\ec.h" />
+    <ClInclude Include="vendor\openssl\ecdh.h" />
+    <ClInclude Include="vendor\openssl\ecdsa.h" />
+    <ClInclude Include="vendor\openssl\engine.h" />
+    <ClInclude Include="vendor\openssl\err.h" />
+    <ClInclude Include="vendor\openssl\evp.h" />
+    <ClInclude Include="vendor\openssl\e_os2.h" />
+    <ClInclude Include="vendor\openssl\hmac.h" />
+    <ClInclude Include="vendor\openssl\idea.h" />
+    <ClInclude Include="vendor\openssl\krb5_asn.h" />
+    <ClInclude Include="vendor\openssl\kssl.h" />
+    <ClInclude Include="vendor\openssl\lhash.h" />
+    <ClInclude Include="vendor\openssl\md4.h" />
+    <ClInclude Include="vendor\openssl\md5.h" />
+    <ClInclude Include="vendor\openssl\mdc2.h" />
+    <ClInclude Include="vendor\openssl\modes.h" />
+    <ClInclude Include="vendor\openssl\objects.h" />
+    <ClInclude Include="vendor\openssl\obj_mac.h" />
+    <ClInclude Include="vendor\openssl\ocsp.h" />
+    <ClInclude Include="vendor\openssl\opensslconf.h" />
+    <ClInclude Include="vendor\openssl\opensslv.h" />
+    <ClInclude Include="vendor\openssl\ossl_typ.h" />
+    <ClInclude Include="vendor\openssl\pem.h" />
+    <ClInclude Include="vendor\openssl\pem2.h" />
+    <ClInclude Include="vendor\openssl\pkcs12.h" />
+    <ClInclude Include="vendor\openssl\pkcs7.h" />
+    <ClInclude Include="vendor\openssl\pqueue.h" />
+    <ClInclude Include="vendor\openssl\rand.h" />
+    <ClInclude Include="vendor\openssl\rc2.h" />
+    <ClInclude Include="vendor\openssl\rc4.h" />
+    <ClInclude Include="vendor\openssl\ripemd.h" />
+    <ClInclude Include="vendor\openssl\rsa.h" />
+    <ClInclude Include="vendor\openssl\safestack.h" />
+    <ClInclude Include="vendor\openssl\seed.h" />
+    <ClInclude Include="vendor\openssl\sha.h" />
+    <ClInclude Include="vendor\openssl\srp.h" />
+    <ClInclude Include="vendor\openssl\srtp.h" />
+    <ClInclude Include="vendor\openssl\ssl.h" />
+    <ClInclude Include="vendor\openssl\ssl2.h" />
+    <ClInclude Include="vendor\openssl\ssl23.h" />
+    <ClInclude Include="vendor\openssl\ssl3.h" />
+    <ClInclude Include="vendor\openssl\stack.h" />
+    <ClInclude Include="vendor\openssl\symhacks.h" />
+    <ClInclude Include="vendor\openssl\tls1.h" />
+    <ClInclude Include="vendor\openssl\ts.h" />
+    <ClInclude Include="vendor\openssl\txt_db.h" />
+    <ClInclude Include="vendor\openssl\ui.h" />
+    <ClInclude Include="vendor\openssl\ui_compat.h" />
+    <ClInclude Include="vendor\openssl\whrlpool.h" />
+    <ClInclude Include="vendor\openssl\x509.h" />
+    <ClInclude Include="vendor\openssl\x509v3.h" />
+    <ClInclude Include="vendor\openssl\x509_vfy.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-attributes.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-bidi-type.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-break.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-context.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-coverage.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-engine.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-enum-types.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-features.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-font.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-fontmap.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-fontset.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-glyph-item.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-glyph.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-gravity.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-item.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-language.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-layout.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-matrix.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-modules.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-ot.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-renderer.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-script.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-tabs.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-types.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango-utils.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pango.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pangocairo.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pangofc-decoder.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pangofc-font.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pangofc-fontmap.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pangoft2.h" />
+    <ClInclude Include="vendor\pango-1.0\pango\pangowin32.h" />
+    <ClInclude Include="vendor\pixman-1\pixman-version.h" />
+    <ClInclude Include="vendor\pixman-1\pixman.h" />
+    <ClInclude Include="vendor\png.h" />
+    <ClInclude Include="vendor\pngconf.h" />
+    <ClInclude Include="vendor\pnglibconf.h" />
+    <ClInclude Include="vendor\pngpriv.h" />
+    <ClInclude Include="vendor\t1tables.h" />
+    <ClInclude Include="vendor\ttnameid.h" />
+    <ClInclude Include="vendor\tttables.h" />
+    <ClInclude Include="vendor\tttags.h" />
+    <ClInclude Include="vendor\ttunpat.h" />
+    <ClInclude Include="vendor\zconf.h" />
+    <ClInclude Include="vendor\zlib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="ExtensionMethods.cpp" />
+    <ClCompile Include="HexChatWindow.cpp" />
+    <ClCompile Include="Stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

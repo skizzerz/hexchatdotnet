@@ -190,4 +190,3 @@ ModelManifest.xml
 
 # Deployment related things
 /deploy.bat
-*.snk

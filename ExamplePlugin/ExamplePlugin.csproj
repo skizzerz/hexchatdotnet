@@ -68,10 +68,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\hcdotnet.graphics\hcdotnet.graphics.csproj">
-      <Project>{eec97751-249c-4da9-997b-98a60a94b39f}</Project>
+    <ProjectReference Include="..\hcdotnet.graphics\hcdotnet.graphics.vcxproj">
+      <Project>{beba7dc2-52e5-495c-b5fa-d9dc4aa9e041}</Project>
       <Name>hcdotnet.graphics</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\hcdotnet\hcdotnet.vcxproj">
       <Project>{03a5d3cd-6fdb-42a8-9be5-8c3f17876f28}</Project>

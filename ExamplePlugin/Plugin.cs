@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using HexChatDotNet;
 using HexChatDotNet.Graphics;
 
@@ -65,7 +66,8 @@ namespace ExamplePlugin
 		public Eat Woof(string[] words, string[] wordsEol)
 		{
 			HexChatWindow window = HexChat.GetContext().GetWindow();
-			window.MessageBox("Woof", "Woof!", null);
+			window.MessageDialog(MessageType.Info, ButtonsType.Ok, "Woof!");
+
 			return Eat.All;
 		}
 	}
