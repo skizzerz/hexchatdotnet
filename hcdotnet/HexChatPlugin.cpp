@@ -49,51 +49,51 @@ namespace HexChatDotNet {
 		return nullptr;
 	}
 
-	CommandHook^ HexChatPlugin::CreateCommandHook(String^ name, String^ help, Priority priority) {
+	CommandHook^ HexChatPlugin::CreateCommandHook(String^ name, CommandCallback^ callback, String^ help, Priority priority) {
 		if (name == nullptr) {
 			throw gcnew ArgumentNullException("name");
 		}
 
-		auto hook = gcnew CommandHook(this, name, help, priority);
+		auto hook = gcnew CommandHook(this, name, callback, help, priority);
 		_hooks->Add(hook);
 		hook->Hook();
 		return hook;
 	}
 
-	PrintHook^ HexChatPlugin::CreatePrintHook(PrintEvent eventName, Priority priority) {
-		return CreatePrintHook(Extensions::ToHexChatString(eventName), priority);
+	PrintHook^ HexChatPlugin::CreatePrintHook(PrintEvent eventName, PrintCallback^ callback, Priority priority) {
+		return CreatePrintHook(Extensions::ToHexChatString(eventName), callback, priority);
 	}
 
-	PrintHook^ HexChatPlugin::CreatePrintHook(String^ eventName, Priority priority) {
+	PrintHook^ HexChatPlugin::CreatePrintHook(String^ eventName, PrintCallback^ callback, Priority priority) {
 		if (eventName == nullptr) {
 			throw gcnew ArgumentNullException("eventName");
 		}
 
-		auto hook = gcnew PrintHook(this, eventName, priority);
+		auto hook = gcnew PrintHook(this, eventName, callback, priority);
 		_hooks->Add(hook);
 		return hook;
 	}
 
-	ServerHook^ HexChatPlugin::CreateServerHook(ServerEvent eventName, Priority priority) {
-		return CreateServerHook(Extensions::ToHexChatString(eventName), priority);
+	ServerHook^ HexChatPlugin::CreateServerHook(ServerEvent eventName, ServerCallback^ callback, Priority priority) {
+		return CreateServerHook(Extensions::ToHexChatString(eventName), callback, priority);
 	}
 
-	ServerHook^ HexChatPlugin::CreateServerHook(String^ eventName, Priority priority) {
+	ServerHook^ HexChatPlugin::CreateServerHook(String^ eventName, ServerCallback^ callback, Priority priority) {
 		if (eventName == nullptr) {
 			throw gcnew ArgumentNullException("eventName");
 		}
 
-		auto hook = gcnew ServerHook(this, eventName, priority);
+		auto hook = gcnew ServerHook(this, eventName, callback, priority);
 		_hooks->Add(hook);
 		return hook;
 	}
 
-	TimerHook^ HexChatPlugin::CreateTimerHook(int timeout) {
+	TimerHook^ HexChatPlugin::CreateTimerHook(int timeout, TimerCallback^ callback) {
 		if (timeout <= 0) {
 			throw gcnew ArgumentOutOfRangeException("timeout", "argument must be a positive integer");
 		}
 
-		auto hook = gcnew TimerHook(this, timeout);
+		auto hook = gcnew TimerHook(this, timeout, callback);
 		_hooks->Add(hook);
 		return hook;
 	}

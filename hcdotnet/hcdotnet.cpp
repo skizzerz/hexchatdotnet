@@ -51,11 +51,11 @@ static int dotnet_command(char** word, char** word_eol, void* user_data) {
 	int retval = HEXCHAT_EAT_ALL;
 
 	if (!stricmp(word[2], "load")) {
-		retval = load_command(word + sizeof(char*), word_eol + sizeof(char*), user_data);
+		retval = load_command(word + 1, word_eol + 1, user_data);
 	} else if (!stricmp(word[2], "unload")) {
-		retval = unload_command(word + sizeof(char*), word_eol + sizeof(char*), user_data);
+		retval = unload_command(word + 1, word_eol + 1, user_data);
 	} else if (!stricmp(word[2], "reload")) {
-		retval = reload_command(word + sizeof(char*), word_eol + sizeof(char*), user_data);
+		retval = reload_command(word + 1, word_eol + 1, user_data);
 	} else if (!stricmp(word[2], "errinfo")) {
 		StringBuilder sb;
 		marshal_context ctx;
@@ -129,7 +129,7 @@ extern "C" __declspec(dllexport) int hexchat_plugin_deinit() {
 
 	HexChatInternal::UnloadAll();
 
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < 4; ++i) {
 		hexchat_unhook(ph, hooks[i]);
 	}
 

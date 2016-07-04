@@ -28,47 +28,45 @@ using HexChatDotNet.Graphics;
 
 namespace ExamplePlugin
 {
-	/// <summary>
-	/// Example plugin for HexChatDotNet, adds a /meow command.
-	/// </summary>
-	public class Plugin : HexChatPlugin
-	{
-		public override string Name
-		{
-			get { return "Example"; }
-		}
+    /// <summary>
+    /// Example plugin for HexChatDotNet, adds a /meow command.
+    /// </summary>
+    public class Plugin : HexChatPlugin
+    {
+        public override string Name
+        {
+            get { return "Example"; }
+        }
 
-		public override string Desc
-		{
-			get { return "Example plugin for .NET"; }
-		}
+        public override string Desc
+        {
+            get { return "Example plugin for .NET"; }
+        }
 
-		public override string Version
-		{
-			get { return "1.0.0"; }
-		}
+        public override string Version
+        {
+            get { return "1.0.0"; }
+        }
 
-		public override void Init()
-		{
-			CommandHook meow = CreateCommandHook("meow", "Usage: /meow");
-			meow.Callback += Meow;
-			CommandHook woof = CreateCommandHook("woof", "Usage: /woof");
-			woof.Callback += Woof;
-			HexChat.Print("Example .NET plugin loaded!");
-		}
+        public override void Init()
+        {
+            CommandHook meow = CreateCommandHook("meow", Meow, "Usage: /meow");
+            CommandHook woof = CreateCommandHook("woof", Woof, "Usage: /woof");
+            HexChat.Print("Example .NET plugin loaded!");
+        }
 
-		public Eat Meow(string[] words, string[] wordsEol)
-		{
-			HexChat.Print("meow!");
-			return Eat.All;
-		}
+        public Eat Meow(string[] words, string[] wordsEol)
+        {
+            HexChat.Print("meow!");
+            return Eat.All;
+        }
 
-		public Eat Woof(string[] words, string[] wordsEol)
-		{
-			HexChatWindow window = HexChat.GetContext().GetWindow();
-			window.MessageDialog(MessageType.Info, ButtonsType.Ok, "Woof!");
+        public Eat Woof(string[] words, string[] wordsEol)
+        {
+            HexChatWindow window = HexChat.GetContext().GetWindow();
+            window.MessageDialog(MessageType.Info, ButtonsType.Ok, "Very Important Message", "Woof!");
 
-			return Eat.All;
-		}
-	}
+            return Eat.All;
+        }
+    }
 }

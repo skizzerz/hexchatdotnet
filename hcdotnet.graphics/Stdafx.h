@@ -20,6 +20,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 
+// C4944: cannot import symbol as it already exists in the current scope
+// The implicit #using declaration for hcdotnet.dll also includes <msclr/marshal.h>
+// which leads to duplicate symbol definitions and therefore this warning
+#pragma warning(disable: 4944)
+
+#include <msclr/marshal.h>
+
 // Version numbering follows the semantic versioning spec
 // Compiled number can be obtained via the API_VERSION macro or by calling HexChat::GetPluginApiVersion(bool includeBuildMetadata)
 #define MAJOR_VERSION "1"

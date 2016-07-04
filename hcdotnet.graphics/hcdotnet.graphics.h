@@ -41,6 +41,7 @@ ref class PangoSmall;
 ref class PangoMonospace;
 ref class PangoUnderline;
 ref class PangoStringBuilder;
+ref class PangoText;
 
 value class FontSize;
 value class FontWeight;
@@ -62,6 +63,9 @@ public:
 	static HexChatWindow^ GetWindow(HexChatContext^ context);
 };
 
+/// <summary>
+/// Represents a window in the HexChat application GUI
+/// </summary>
 public ref class HexChatWindow sealed {
 private:
 	GtkWindow* window;
@@ -70,121 +74,24 @@ internal:
 	HexChatWindow(System::IntPtr winPtr);
 
 public:
-	ResponseType MessageDialog(MessageType type, ButtonsType buttons, System::String^ format, ... array<System::String^>^ args);
-};
+	/// <summary>Displays a modal message dialog with the given type, buttons, and text.</summary>
+	/// <param name="type">Type of message dialog.</param>
+	/// <param name="buttons">What buttons to display on the dialog.</param>
+	/// <param name="title">Text to display above the main text, may be null.</param>
+	/// <param name="format">Format string for text to display in the dialog.</param>
+	/// <param name="args">Arguments for the format string.</param>
+	/// <returns>The action the user took with the dialog.</returns>
+	ResponseType MessageDialog(MessageType type, ButtonsType buttons, System::String^ title, System::String^ format, ... array<System::Object^>^ args);
 
-public interface class IPangoString {
-public:
-	System::String^ ToMarkupString();
-};
-
-#define PROP3(t, n, b) property t n { t get() { return b; } void set(t value) { b = value; } }
-#define PROP2(t, b) PROP3(HexChatDotNet::Graphics::##t, t, b)
-#define PROPS(n, b) PROP3(System::String^, n, b)
-#define PROPD(n, b) PROP3(System::Decimal, n, b)
-#define PROPB(n, b) PROP3(bool, n, b)
-
-public ref class PangoString : IPangoString {
-protected:
-	System::String^ _tag;
-	System::String^ _contents;
-	System::String^ _fontFamily;
-	HexChatDotNet::Graphics::FontSize _fontSize;
-	HexChatDotNet::Graphics::FontStyle _fontStyle;
-	HexChatDotNet::Graphics::FontWeight _fontWeight;
-	HexChatDotNet::Graphics::FontVariant _fontVariant;
-	HexChatDotNet::Graphics::FontStretch _fontStretch;
-	System::String^ _fontFeatures;
-	HexChatDotNet::Graphics::Underline _underline;
-	// Note: we store _rise in pixels, but pango expects pango units; we multiply this value by PANGO_SCALE to get that
-	System::Decimal _rise;
-	bool _strikethrough;
-	bool _fallback;
-	System::String^ _lang;
-	// Note: we store _letterSpacing in points, but pango expects 1024ths of a point; we multiply this value by 1024 to get that
-	System::Decimal _letterSpacing;
-	HexChatDotNet::Graphics::Gravity _gravity;
-	HexChatDotNet::Graphics::GravityHint _gravityHint;
-
-	PangoString(System::String^ tag, System::String^ contents) : _tag(tag), _contents(contents) { }
-
-public:
-	PangoString(System::String^ contents) : _tag("span"), _contents(contents) { }
-
-	PROPS(FontFamily, _fontFamily)
-	PROP2(FontSize, _fontSize)
-	PROP2(FontStyle, _fontStyle)
-	PROP2(FontWeight, _fontWeight)
-	PROP2(FontVariant, _fontVariant)
-	PROP2(FontStretch, _fontStretch)
-	PROPS(FontFeatures, _fontFeatures)
-	// FG Color
-	// BG Color
-	// FG Alpha
-	// BG Alpha
-	PROP2(Underline, _underline)
-	// Underline Color
-	PROPD(Rise, _rise)
-	PROPB(Strikethrough, _strikethrough)
-	// Strikethrough Color
-	PROPB(Fallback, _fallback)
-	PROPS(Lang, _lang)
-	PROPD(LetterSpacing, _letterSpacing)
-	PROP2(Gravity, _gravity)
-	PROP2(GravityHint, _gravityHint)
-
-	virtual System::String^ ToMarkupString();
-};
-
-#undef PROP3
-#undef PROP2
-#undef PROPS
-#undef PROPD
-#undef PROPB
-
-public ref class PangoBold : PangoString {
-public:
-	PangoBold(System::String^ contents) : PangoString("b", contents) { }
-};
-
-public ref class PangoBig : PangoString {
-public:
-	PangoBig(System::String^ contents) : PangoString("big", contents) { }
-};
-
-public ref class PangoItalic : PangoString {
-public:
-	PangoItalic(System::String^ contents) : PangoString("i", contents) { }
-};
-
-public ref class PangoStrikethrough : PangoString {
-public:
-	PangoStrikethrough(System::String^ contents) : PangoString("s", contents) { }
-};
-
-public ref class PangoSubscript : PangoString {
-public:
-	PangoSubscript(System::String^ contents) : PangoString("sub", contents) { }
-};
-
-public ref class PangoSuperscript : PangoString {
-public:
-	PangoSuperscript(System::String^ contents) : PangoString("sup", contents) { }
-};
-
-public ref class PangoSmall : PangoString {
-public:
-	PangoSmall(System::String^ contents) : PangoString("small", contents) { }
-};
-
-public ref class PangoMonospace : PangoString {
-public:
-	PangoMonospace(System::String^ contents) : PangoString("tt", contents) { }
-};
-
-public ref class PangoUnderline : PangoString {
-public:
-	PangoUnderline(System::String^ contents) : PangoString("u", contents) { }
+	/// <summary>
+	/// Displays a modal message dialog with the given type, buttons, and text.
+	/// This overload should be used when you wish to style the dialog text.
+	/// </summary>
+	/// <param name="type">Type of message dialog.</param>
+	/// <param name="buttons">What buttons to display on the dialog.</param>
+	/// <param name="title">Text to display above the main text, may be null.</param>
+	/// <param name="text">Text to display in the dialog.</param>
+	ResponseType MessageDialog(MessageType type, ButtonsType buttons, IPangoString^ title, IPangoString^ text);
 };
 
 public value class FontSize {
@@ -293,6 +200,14 @@ public enum class FontStretch {
 	UltraExpanded
 };
 
+public enum class Underline {
+	None,
+	Single,
+	Double,
+	Low,
+	Error
+};
+
 public enum class Gravity {
 	Auto,
 	South,
@@ -305,6 +220,162 @@ public enum class GravityHint {
 	Natural,
 	Strong,
 	Line
+};
+
+
+#define PROP3(t, n, b) property t n { t get() { return b; } void set(t value) { b = value; } }
+#define PROP2(t, b) PROP3(System::Nullable<HexChatDotNet::Graphics::##t>, t, b)
+#define PROPS(n, b) PROP3(System::String^, n, b)
+#define PROPD(n, b) PROP3(System::Nullable<System::Decimal>, n, b)
+#define PROPB(n, b) PROP3(System::Nullable<bool>, n, b)
+
+
+public interface class IPangoString {
+public:
+	System::String^ ToMarkupString();
+};
+
+public ref class PangoString : IPangoString {
+protected:
+	System::String^ _tag;
+	System::String^ _contents;
+	System::String^ _fontFamily;
+	System::Nullable<HexChatDotNet::Graphics::FontSize> _fontSize;
+	System::Nullable<HexChatDotNet::Graphics::FontStyle> _fontStyle;
+	System::Nullable<HexChatDotNet::Graphics::FontWeight> _fontWeight;
+	System::Nullable<HexChatDotNet::Graphics::FontVariant> _fontVariant;
+	System::Nullable<HexChatDotNet::Graphics::FontStretch> _fontStretch;
+	System::String^ _fontFeatures;
+	System::String^ _fgcolor;
+	System::String^ _bgcolor;
+	System::String^ _fgalpha;
+	System::String^ _bgalpha;
+	System::Nullable<HexChatDotNet::Graphics::Underline> _underline;
+	System::String^ _underlineColor;
+	// Note: we store _rise in pixels, but pango expects pango units; we multiply this value by PANGO_SCALE to get that
+	System::Nullable<System::Decimal> _rise;
+	System::Nullable<bool> _strikethrough;
+	System::String^ _strikethroughColor;
+	System::Nullable<bool> _fallback;
+	System::String^ _lang;
+	// Note: we store _letterSpacing in points, but pango expects 1024ths of a point; we multiply this value by 1024 to get that
+	System::Nullable<System::Decimal> _letterSpacing;
+	System::Nullable<HexChatDotNet::Graphics::Gravity> _gravity;
+	System::Nullable<HexChatDotNet::Graphics::GravityHint> _gravityHint;
+
+	PangoString(System::String^ tag, System::String^ contents) : _tag(tag), _contents(contents) { }
+
+public:
+	PangoString(System::String^ contents) : _tag("span"), _contents(contents) { }
+
+	property System::String^ Tag { System::String^ get() { return _tag; } }
+
+	PROPS(Contents, _contents)
+	PROPS(FontFamily, _fontFamily)
+	PROP2(FontSize, _fontSize)
+	PROP2(FontStyle, _fontStyle)
+	PROP2(FontWeight, _fontWeight)
+	PROP2(FontVariant, _fontVariant)
+	PROP2(FontStretch, _fontStretch)
+	PROPS(FontFeatures, _fontFeatures)
+	PROPS(ForegroundColor, _fgcolor)
+	PROPS(BackgroundColor, _bgcolor)
+	PROPS(ForegroundAlpha, _fgalpha)
+	PROPS(BackgroundAlpha, _bgalpha)
+	PROP2(Underline, _underline)
+	PROPS(UnderlineColor, _underlineColor)
+	PROPD(Rise, _rise)
+	PROPB(Strikethrough, _strikethrough)
+	PROPS(StrikethroughColor, _strikethroughColor)
+	PROPB(Fallback, _fallback)
+	PROPS(Lang, _lang)
+	PROPD(LetterSpacing, _letterSpacing)
+	PROP2(Gravity, _gravity)
+	PROP2(GravityHint, _gravityHint)
+
+	virtual System::String^ ToMarkupString();
+};
+
+#undef PROP3
+#undef PROP2
+#undef PROPS
+#undef PROPD
+#undef PROPB
+
+public ref class PangoBold : PangoString {
+public:
+	PangoBold(System::String^ contents) : PangoString("b", contents) { }
+};
+
+public ref class PangoBig : PangoString {
+public:
+	PangoBig(System::String^ contents) : PangoString("big", contents) { }
+};
+
+public ref class PangoItalic : PangoString {
+public:
+	PangoItalic(System::String^ contents) : PangoString("i", contents) { }
+};
+
+public ref class PangoStrikethrough : PangoString {
+public:
+	PangoStrikethrough(System::String^ contents) : PangoString("s", contents) { }
+};
+
+public ref class PangoSubscript : PangoString {
+public:
+	PangoSubscript(System::String^ contents) : PangoString("sub", contents) { }
+};
+
+public ref class PangoSuperscript : PangoString {
+public:
+	PangoSuperscript(System::String^ contents) : PangoString("sup", contents) { }
+};
+
+public ref class PangoSmall : PangoString {
+public:
+	PangoSmall(System::String^ contents) : PangoString("small", contents) { }
+};
+
+public ref class PangoMonospace : PangoString {
+public:
+	PangoMonospace(System::String^ contents) : PangoString("tt", contents) { }
+};
+
+public ref class PangoUnderline : PangoString {
+public:
+	PangoUnderline(System::String^ contents) : PangoString("u", contents) { }
+};
+
+public ref class PangoStringBuilder sealed : IPangoString {
+private:
+	System::Text::StringBuilder _contents;
+
+public:
+	PangoStringBuilder();
+	PangoStringBuilder(System::String^ contents);
+	PangoStringBuilder(IPangoString^ contents);
+
+	PangoStringBuilder^ Append(System::String^ value);
+	PangoStringBuilder^ Append(IPangoString^ value);
+	PangoStringBuilder^ AppendFormat(System::String^ format, ... array<System::Object^>^ args);
+	PangoStringBuilder^ AppendFormat(IPangoString^ format, ... array<System::Object^>^ args);
+	PangoStringBuilder^ AppendLine();
+	PangoStringBuilder^ AppendLine(System::String^ value);
+	PangoStringBuilder^ AppendLine(IPangoString^ value);
+
+	virtual System::String^ ToMarkupString();
+};
+
+public ref class PangoText sealed : IPangoString {
+private:
+	System::String^ _contents;
+
+public:
+	PangoText(System::String^ contents);
+
+	virtual System::String^ ToMarkupString();
+	System::String^ ToString() override;
 };
 
 }

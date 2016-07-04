@@ -374,6 +374,10 @@ namespace HexChatDotNet {
 		case 0: // Failed
 			throw gcnew PreferenceNotFoundException();
 		case 1: // String
+			if (s == nullptr) {
+				throw gcnew PreferenceNotFoundException();
+			}
+
 			sval = gcnew String(*s);
 			return String::typeid;
 		case 2: // Int

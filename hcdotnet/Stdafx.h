@@ -19,6 +19,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
+// C4100: Unrefernced formal parameter
+// Lots of managed functions take parameters that are not used (the "sender" in event handlers for instance)
+// C4996: The POSIX name for this item is deprecated. Instead use the ISO C and C++ conformant name: _blah.
+// Iditioc and unneeded warning
 #pragma warning(disable: 4100 4996)
 
 #include <msclr/marshal.h>

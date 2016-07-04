@@ -489,15 +489,16 @@ namespace HexChatDotNet {
 		virtual void Init() abstract;
 		virtual ~HexChatPlugin();
 
+		[System::Security::SecurityCriticalAttribute]
 		virtual System::Object^ InitializeLifetimeService() override sealed;
 
 	protected:
-		CommandHook^ CreateCommandHook(System::String^ name, [System::Runtime::InteropServices::OptionalAttribute] System::String^ help, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
-		PrintHook^ CreatePrintHook(PrintEvent eventName, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
-		PrintHook^ CreatePrintHook(System::String^ eventName, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
-		ServerHook^ CreateServerHook(ServerEvent eventName, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
-		ServerHook^ CreateServerHook(System::String^ eventName, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
-		TimerHook^ CreateTimerHook(int timeout);
+		CommandHook^ CreateCommandHook(System::String^ name, CommandCallback^ callback, [System::Runtime::InteropServices::OptionalAttribute] System::String^ help, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
+		PrintHook^ CreatePrintHook(PrintEvent eventName, PrintCallback^ callback, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
+		PrintHook^ CreatePrintHook(System::String^ eventName, PrintCallback^ callback, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
+		ServerHook^ CreateServerHook(ServerEvent eventName, ServerCallback^ callback, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
+		ServerHook^ CreateServerHook(System::String^ eventName, ServerCallback^ callback, [System::Runtime::InteropServices::OptionalAttribute] Priority priority);
+		TimerHook^ CreateTimerHook(int timeout, TimerCallback^ callback);
 
 		initonly PrefDictionary^ PluginPrefs;
 
@@ -800,16 +801,16 @@ namespace HexChatDotNet {
 		
 	protected:
 		initonly HexChatPlugin^ Parent;
+		initonly T Callback;
 		System::Runtime::InteropServices::GCHandle _gch;
 
 		virtual void* HookInternal() abstract;
 
 	internal:
-		HookBase(HexChatPlugin^ parent) : Parent(parent), _hook(nullptr) { }
+		HookBase(HexChatPlugin^ parent, T callback) : Parent(parent), Callback(callback), _hook(nullptr) { }
 		~HookBase();
 
 	public:
-		event T Callback;
 		virtual void Hook() sealed;
 		virtual void Unhook() sealed;
 	};
@@ -820,8 +821,8 @@ namespace HexChatDotNet {
 		Priority _priority;
 
 	internal:
-		CommandHook(HexChatPlugin^ parent, System::String^ name, System::String^ help, Priority priority)
-			: HookBase<CommandCallback^>(parent), _name(name), _help(help), _priority(priority) { }
+		CommandHook(HexChatPlugin^ parent, System::String^ name, CommandCallback^ callback, System::String^ help, Priority priority)
+			: HookBase<CommandCallback^>(parent, callback), _name(name), _help(help), _priority(priority) { }
 
 		int CallbackInternal(char** word, char** word_eol, void* user_data);
 
@@ -834,8 +835,8 @@ namespace HexChatDotNet {
 		Priority _priority;
 
 	internal:
-		PrintHook(HexChatPlugin^ parent, System::String^ eventName, Priority priority)
-			: HookBase<PrintCallback^>(parent), _eventName(eventName), _priority(priority) { }
+		PrintHook(HexChatPlugin^ parent, System::String^ eventName, PrintCallback^ callback, Priority priority)
+			: HookBase<PrintCallback^>(parent, callback), _eventName(eventName), _priority(priority) { }
 
 		int CallbackInternal(char** word, hexchat_event_attrs* attrs, void* user_data);
 
@@ -848,8 +849,8 @@ namespace HexChatDotNet {
 		Priority _priority;
 
 	internal:
-		ServerHook(HexChatPlugin^ parent, System::String^ eventName, Priority priority)
-			: HookBase<ServerCallback^>(parent), _eventName(eventName), _priority(priority) { }
+		ServerHook(HexChatPlugin^ parent, System::String^ eventName, ServerCallback^ callback, Priority priority)
+			: HookBase<ServerCallback^>(parent, callback), _eventName(eventName), _priority(priority) { }
 
 		int CallbackInternal(char** word, char** word_eol, hexchat_event_attrs* attrs, void* user_data);
 
@@ -861,8 +862,8 @@ namespace HexChatDotNet {
 		int _timeout;
 
 	internal:
-		TimerHook(HexChatPlugin^ parent, int timeout)
-			: HookBase<TimerCallback^>(parent), _timeout(timeout) { }
+		TimerHook(HexChatPlugin^ parent, int timeout, TimerCallback^ callback)
+			: HookBase<TimerCallback^>(parent, callback), _timeout(timeout) { }
 
 		int CallbackInternal(void* user_data);
 
@@ -923,8 +924,11 @@ namespace HexChatDotNet {
 
 	#pragma endregion
 
+	[System::SerializableAttribute]
 	public ref class PreferenceNotFoundException sealed : public System::Exception { };
+	[System::SerializableAttribute]
 	public ref class PreferenceTypeMismatchException sealed : public System::Exception { };
+	[System::SerializableAttribute]
 	public ref class ContextSwitchException sealed : public System::Exception { };
 
 	public ref class PrefDictionary sealed :
